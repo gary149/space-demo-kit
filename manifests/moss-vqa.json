@@ -1,0 +1,19 @@
+{
+  "name": "moss-vqa",
+  "template": "vqa",
+  "space": {
+    "id": "hugging-apps/openmoss-team-moss-vl-realtime",
+    "emoji": "👁️",
+    "colorFrom": "gray",
+    "colorTo": "indigo",
+    "likes": 1,
+    "hardware": "zero-a10g"
+  },
+  "input_label": "video (primary input)",
+  "prompt_label": "prompt",
+  "output_label": "response (streamed)",
+  "prompt": "Describe what is happening in this video.",
+  "video": "/root/code/weekly-space-moss-vl-realtime/assets/luoge.mp4",
+  "answer": "The video opens on the exterior of a Starbucks storefront before cutting inside to a comedic dialogue scene. A customer at the counter insists he only wants \"the medium\" of the three cup sizes laid out in front of him, while the clerk tries to explain that the sizes are actually labeled Short, Tall, and Grande, so there is no cup literally marked \"medium.\" The customer keeps repeating his request, refusing the given size names, which grows into a comic back-and-forth as the clerk struggles to map his plain-language request onto the store's naming convention. Subtitles translate the Mandarin dialogue into English throughout the exchange.",
+  "meta": "answer written from the frames · ZeroGPU quota exhausted, not live model output"
+}

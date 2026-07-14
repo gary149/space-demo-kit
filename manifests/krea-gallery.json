@@ -1,0 +1,25 @@
+{
+  "name": "krea-gallery",
+  "template": "gallery",
+  "space": {
+    "id": "hugging-apps/krea2-identity-edit",
+    "emoji": "🧬",
+    "colorFrom": "blue",
+    "colorTo": "gray",
+    "likes": 27,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/weekly-space-krea-identity/assets/woman.jpg",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "prompt": "place this person in four different worlds: astronaut, noir detective, neon tokyo, paris cafe",
+  "outputs": [
+    { "path": "/root/.openclaw/workspace/work/krea_identity_outputs/01_cinematic_1_astronaut.webp", "label": "astronaut" },
+    { "path": "/root/.openclaw/workspace/work/krea_identity_outputs/01_cinematic_2_noir detective.webp", "label": "noir detective" },
+    { "path": "/root/.openclaw/workspace/work/krea_identity_outputs/02_WORLDS_2_neon tokyo.webp", "label": "neon tokyo" },
+    { "path": "/root/.openclaw/workspace/work/krea_identity_outputs/02_WORLDS_1_paris cafe.webp", "label": "paris cafe" }
+  ],
+  "output_label": "edited images",
+  "meta": "outputs from a live session",
+  "button": "Generate"
+}

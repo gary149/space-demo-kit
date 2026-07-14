@@ -1,0 +1,20 @@
+{
+  "name": "longcat-avatar",
+  "template": "avatar",
+  "space": {
+    "id": "victor/LongCat-Video-Avatar-1.5",
+    "emoji": "🎤",
+    "colorFrom": "indigo",
+    "colorTo": "pink",
+    "likes": 284,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/space-demo-kit/assets/mock/longcat_portrait.png",
+  "input_label": "portrait",
+  "audio": "/root/code/weekly-space-longcat-avatar-video/work/generated/longcat_photoreal_raw.mp4",
+  "audio_label": "voice clip",
+  "output_label": "talking avatar",
+  "button": "Animate",
+  "video": "/root/code/weekly-space-longcat-avatar-video/work/generated/longcat_photoreal_raw.mp4",
+  "meta": "live output · zero-a10g"
+}

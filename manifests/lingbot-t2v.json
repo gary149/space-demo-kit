@@ -1,0 +1,17 @@
+{
+  "name": "lingbot-t2v",
+  "template": "t2v",
+  "space": {
+    "id": "victor/lingbot-video",
+    "emoji": "🎬",
+    "colorFrom": "indigo",
+    "colorTo": "purple",
+    "likes": 10,
+    "hardware": "zero-a10g"
+  },
+  "prompt": "A corgi puppy runs through shallow ocean water at golden hour, splashing as the camera tracks low alongside it.",
+  "prompt_label": "prompt",
+  "output_label": "generated video",
+  "video": "/root/code/weekly-space-lingbot-video/work/lingbot_t2v_raw.mp4",
+  "meta": "live output · seed 42"
+}

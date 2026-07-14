@@ -1,0 +1,22 @@
+{
+  "name": "wan22-i2v",
+  "template": "i2v",
+  "space": {
+    "id": "r3gm/wan2-2-fp8da-aoti-preview",
+    "title": "Wan2.2 14B Preview",
+    "emoji": "🐌",
+    "colorFrom": "yellow",
+    "colorTo": "pink",
+    "short_description": "generate a video from an image with a text prompt",
+    "sdk": "gradio",
+    "likes": 2880,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/weekly-space-wan-video/artifacts/source_cat.jpg",
+  "input_label": "input image",
+  "prompt_label": "prompt",
+  "output_label": "generated video",
+  "prompt": "The white cat glides forward on a paddleboard. Turquoise water sparkles and splashes, ears twitch, fur ripples in the sea breeze, slow camera pullback.",
+  "video": "/root/code/weekly-space-wan-video/artifacts/wan22_space_raw.mp4",
+  "meta": "live output · zero-a10g"
+}

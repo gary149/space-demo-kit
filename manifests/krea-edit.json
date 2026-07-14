@@ -1,0 +1,23 @@
+{
+  "name": "krea-edit",
+  "template": "edit",
+  "space": {
+    "id": "hugging-apps/krea2-identity-edit",
+    "title": "Krea 2 Identity Edit",
+    "emoji": "🧬",
+    "colorFrom": "blue",
+    "colorTo": "gray",
+    "short_description": "Identity-preserving instruction image editing on Krea 2",
+    "sdk": "gradio",
+    "likes": 27,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/weekly-space-krea-identity/assets/woman.jpg",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "output_label": "edited image",
+  "prompt": "create a photo of this person at a busy night market at night",
+  "before_image": "/root/code/weekly-space-krea-identity/assets/woman.jpg",
+  "after_image": "/root/code/weekly-space-krea-identity/assets/woman_night_market_edited.webp",
+  "meta": "live output · zero-a10g"
+}
