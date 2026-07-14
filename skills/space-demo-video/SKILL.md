@@ -36,6 +36,20 @@ cd /root/code/space-demo-kit && python3 render.py manifests/<name>.json
 5. **Verify before delivering**: `ffprobe` the MP4 (duration, 1440x1080) and look at the
    contact sheet (no overflowing text, output visible). Then send the MP4 to the user as media.
 
+## Asset quality bar (hard requirements)
+
+- **Inputs must be real content**: a real photograph, illustration, or clip at least 512 px on
+  the short side. NEVER an emoji, icon, favicon, logo, or clipart — tiny images upscale into
+  blurry blobs and ruin the video. Verify every asset with `file` + dimensions before using it.
+- **Best input source**: the Space's own example assets (the `examples` in its Gradio config,
+  or files in the Space repo via `https://huggingface.co/api/spaces/<id>/tree/main`). They are
+  known to work with the model.
+- **Before/after coherence (`edit`, `a2a`)**: the output MUST actually be derived from the
+  input. Never pair two unrelated assets — an incoherent before/after is worse than no video.
+  If live inference fails: retry via `gradio_client` (not hand-built HTTP calls), try another
+  example input, and if it still fails, report the failure to the user and STOP. Do not
+  fabricate the pair.
+
 ## Template selection
 
 | template | Space task | required manifest fields |
@@ -89,10 +103,12 @@ this machine. Store working assets under `/root/code/<project-dir>/` as usual.
    inputs, extracts frames — allow a few minutes.
 6. Verify MP4 + contact sheet, then deliver the MP4 to the user as a media message.
 
-## Codex dispatch note (OpenClaw)
+## Codex dispatch (OpenClaw — mandatory)
 
-Demo-video requests are heavy (live inference + a ~2 min render): dispatch them to a codex
-session per the codex-monitor skill. Include in the codex prompt:
+Demo-video requests are heavy (live inference + a ~2 min render). Do NOT run inference or
+rendering inline in the main session — it blocks you for many minutes. ALWAYS dispatch a
+codex session per the codex-monitor skill (setsid, `</dev/null`, CODEX_HOME pinned) and let
+the CODEX_FINISHED wake drive verification + delivery. Include in the codex prompt:
 "Read /root/code/space-demo-kit/skills/space-demo-video/SKILL.md and follow it exactly.
 Use the kit's render.py for ALL visuals; do not design any frame yourself."
 
