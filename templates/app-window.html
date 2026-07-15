@@ -444,7 +444,7 @@ window.setup = async manifest => {
       HERO.prFrom = { left: HAS.image ? 220 : 190, top: heroTop, width: heroW, fs: hfs };
     }
     const heroIn = [0, .35];
-    const heroType = HAS.prompt ? .45 + Math.min(3.7, PROMPT_SHOWN.length / 38) : 1.05;
+    const heroType = HAS.prompt ? .45 + Math.min(5.55, PROMPT_SHOWN.length / 25) : 1.05;
     const morph = [heroType + 1.8, heroType + 2.65]; // 1.5s extra hold to read the typed prompt
     T = { hero: { in: heroIn, typeEnd: heroType, morph } };
     press = [morph[1] + .25, morph[1] + .55];
@@ -693,10 +693,8 @@ window.seek = async t => {
     }
   }
 
-  // --- ending: dim inputs, CTA in footer ---
+  // --- ending: CTA in footer (inputs stay at full opacity) ---
   const dp = easeIO(lin(t, T.dim, T.dim + .6));
-  $('col-inputs').style.opacity = 1 - .5 * dp;
-  $('header-right').style.opacity = 1 - .5 * dp;
   $('meta-info').style.opacity = 1 - lin(t, T.dim, T.dim + .25);
   $('meta-cta').style.opacity = lin(t, T.dim + .3, T.dim + .6);
   $('slug').style.color = dp > .5 ? '#111827' : '#6b7280';
