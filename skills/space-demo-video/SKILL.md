@@ -5,11 +5,13 @@ description: "Create a polished social demo video (MP4, 4:3, ~10s) for any Huggi
 
 # Space Demo Video (space-demo-kit)
 
-The kit renders a Gradio-style "app window" video: the Space's real header (emoji,
-author/name, likes, hardware), inputs appearing in panels, a Generate press, a progress
-sweep, and the real output filling the output panel edge-to-edge. Branding is extracted
-from the Space page automatically. Output: 1440x1080 (4:3), 30 fps, ~8–12 s, H.264,
-silent unless the task itself involves audio.
+The kit renders a Gradio-style "app window" video: a hero intro where the input opens
+near full-frame with the prompt typing in large text (readable at mobile feed size),
+a morph into the app layout with the Space's real header (emoji, author/name, likes,
+hardware), a Generate press, a progress sweep, and the real output filling the output
+panel edge-to-edge. Text auto-fits its panels (short answers render huge, long ones stay
+readable). Branding is extracted from the Space page automatically. Output: 1440x1080
+(4:3), 30 fps, ~12–17 s, H.264, silent unless the task itself involves audio.
 
 Kit location on this machine: `/root/code/space-demo-kit`
 Render command (the ONLY way to produce the video):
@@ -83,7 +85,8 @@ Common fields (all templates):
   "input_label": "source image",        // optional label overrides
   "prompt_label": "edit instruction",
   "output_label": "edited image",
-  "audio_gain": 2.0                     // optional; default 2.0 (with limiter)
+  "audio_gain": 2.0,                    // optional; default 2.0 (with limiter)
+  "hero": false                         // optional; set false to skip the full-frame intro
 }
 ```
 
@@ -100,7 +103,7 @@ this machine. Store working assets under `/root/code/<project-dir>/` as usual.
    `ffprobe`/`file` before rendering.
 4. Write `manifests/<name>.json` in the kit.
 5. Render (command above). First run downloads fonts/emoji (needs network) and, for video
-   inputs, extracts frames — allow a few minutes.
+   inputs, extracts frames. A render takes roughly 3–5 minutes — do not assume it hung.
 6. Verify MP4 + contact sheet, then deliver the MP4 to the user as a media message.
 
 ## Codex dispatch (OpenClaw — mandatory)
@@ -119,5 +122,6 @@ Use the kit's render.py for ALL visuals; do not design any frame yourself."
 - Audio templates (`avatar`, `a2a`) mux the real audio automatically, delayed to the moment
   playback starts on screen, at 2x gain with a limiter.
 - `gallery` wants exactly 4 outputs for the 2x2 grid.
+- `vqa` answers auto-fit the output panel: keep them 30–60 words so the type stays large.
 - Do not edit `templates/app-window.html` or `render.py` for a one-off video. If a Space
   genuinely needs a new mode, report that instead of hacking around the kit.
