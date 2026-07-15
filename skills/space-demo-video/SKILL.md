@@ -52,21 +52,6 @@ cd /root/code/space-demo-kit && python3 render.py manifests/<name>.json
   example input, and if it still fails, report the failure to the user and STOP. Do not
   fabricate the pair.
 
-## Styles
-
-The kit has two visual systems, chosen per manifest with `"style"`:
-
-- **`"viral"` (recommended for social posts)** — editorial poster system (warm paper, Space
-  Grotesk display titles, rust/steel accents, grain): zero UI chrome, frame one already tells
-  the whole story, output as big as the canvas allows. Supports `t2i`, `a2a` (sequential
-  ORIGINAL→ENHANCED audio via `audio_sequence: true`), `i2v` (full-bleed video takeover with
-  input picture-in-picture), `edit` (wipe + identity-proof loupe). Design source of truth:
-  `design/SPEC.md` in the kit — read it before proposing visual changes.
-- *(default, no `style` key)* — the Gradio app-window look; used for modalities the viral
-  system does not cover yet (t2v, vqa, avatar, gallery).
-- `t2i` manifests need: `prompt`, `output_image` (+ optional `causality_phrase` to underline
-  the prompt's key subject).
-
 ## Template selection
 
 | template | Space task | required manifest fields |
