@@ -1,0 +1,21 @@
+{
+  "name": "krea2-mbappe-identity-edit",
+  "template": "edit",
+  "space": {
+    "id": "hugging-apps/krea2-identity-edit",
+    "emoji": "🧬",
+    "colorFrom": "blue",
+    "colorTo": "gray",
+    "likes": 29,
+    "hardware": "zero-a10g"
+  },
+  "meta": "live output · zero-a10g",
+  "button": "Edit",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "output_label": "edited image",
+  "input_image": "/root/code/weekly-space-krea-identity/assets/mbappe/kylian_mbappe_france_norway_2026_wikiportraits.jpg",
+  "prompt": "Dress this person in a tailored black tuxedo at a glamorous red-carpet premiere, keeping his face and expression unchanged.",
+  "before_image": "/root/code/weekly-space-krea-identity/assets/mbappe/kylian_mbappe_france_norway_2026_wikiportraits.jpg",
+  "after_image": "/root/code/weekly-space-krea-identity/assets/mbappe/mbappe_red_carpet_identity_edit.webp"
+}

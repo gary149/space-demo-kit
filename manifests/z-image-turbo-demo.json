@@ -1,0 +1,18 @@
+{
+  "name": "z-image-turbo-demo",
+  "template": "t2v",
+  "space": {
+    "id": "mrfakename/Z-Image-Turbo",
+    "emoji": "🖼️",
+    "colorFrom": "yellow",
+    "colorTo": "yellow",
+    "likes": 3550,
+    "hardware": "zero-a10g"
+  },
+  "prompt": "Macro photo of a tiny dragon curled inside a translucent strawberry, morning dew, luminous wings, dark forest bokeh, hyperreal, cinematic light",
+  "prompt_label": "prompt",
+  "output_label": "generated image",
+  "button": "Generate",
+  "video": "/root/code/z-image-turbo-demo/z-image-turbo-static.mp4",
+  "meta": "live image output · static hold · zero-a10g"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "trellis2-demo",
+  "template": "gallery",
+  "space": {
+    "id": "microsoft/TRELLIS.2",
+    "title": "TRELLIS.2",
+    "emoji": "🏢",
+    "colorFrom": "purple",
+    "colorTo": "red",
+    "short_description": "High-fidelity 3D Generation from images",
+    "sdk": "gradio",
+    "likes": 1795,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/trellis2-demo/assets/vintage-instax-camera.jpg",
+  "input_label": "object photo",
+  "prompt_label": "generation task",
+  "prompt": "Reconstruct this photographed object as a detailed textured 3D asset, preserving its geometry, materials, proportions, and appearance from every viewing angle.",
+  "outputs": [
+    {
+      "path": "/root/code/trellis2-demo/inference/mode-3-view-3.jpg",
+      "label": "0°"
+    },
+    {
+      "path": "/root/code/trellis2-demo/inference/mode-3-view-5.jpg",
+      "label": "90°"
+    },
+    {
+      "path": "/root/code/trellis2-demo/inference/mode-3-view-7.jpg",
+      "label": "180°"
+    },
+    {
+      "path": "/root/code/trellis2-demo/inference/mode-3-view-1.jpg",
+      "label": "270°"
+    }
+  ],
+  "output_label": "3D asset views",
+  "meta": "live output · 1024px · zero-a10g",
+  "button": "Generate 3D"
+}

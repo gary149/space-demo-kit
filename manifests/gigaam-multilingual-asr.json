@@ -1,0 +1,20 @@
+{
+  "name": "gigaam-multilingual-asr",
+  "template": "vqa",
+  "space": {
+    "id": "hugging-apps/gigaam-multilingual-asr",
+    "emoji": "🎙️",
+    "colorFrom": "gray",
+    "colorTo": "purple",
+    "likes": 2,
+    "hardware": "zero-a10g"
+  },
+  "input_label": "Russian source clip",
+  "prompt_label": "task",
+  "output_label": "live transcript",
+  "button": "Transcribe",
+  "prompt": "Transcribe this Russian speech clip verbatim.",
+  "video": "/root/code/gigaam-multilingual-asr/assets/naum-kleiman-russian-speech.mp4",
+  "answer": "никто не знает кто его крышует говорят да человек не имеет никакого понятия о том что он пришел",
+  "meta": "live output · ZeroGPU · A.Savin / Wikimedia (FAL)"
+}

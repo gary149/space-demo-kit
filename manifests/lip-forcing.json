@@ -1,0 +1,21 @@
+{
+  "name": "lip-forcing",
+  "template": "avatar",
+  "space": {
+    "id": "hugging-apps/lip-forcing",
+    "emoji": "🗣️",
+    "colorFrom": "indigo",
+    "colorTo": "green",
+    "likes": 1,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/lip-forcing/lip-forcing-reference.png",
+  "input_label": "talking-head reference",
+  "audio": "/root/code/lip-forcing/space_snapshot/examples/example2_audio.wav",
+  "audio_label": "driving audio",
+  "output_label": "lip-synced result",
+  "button": "Lip-sync",
+  "video": "/root/code/lip-forcing/live_output/lip-forcing-live.mp4",
+  "audio_gain": 2.0,
+  "meta": "live /lip_sync output · seed 42 · zero-a10g"
+}

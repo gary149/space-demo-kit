@@ -1,0 +1,21 @@
+{
+  "name": "qwen-image-edit-demo",
+  "template": "edit",
+  "space": {
+    "id": "Qwen/Qwen-Image-Edit",
+    "emoji": "✒️",
+    "colorFrom": "pink",
+    "colorTo": "green",
+    "likes": 830,
+    "hardware": "zero-a10g"
+  },
+  "meta": "mock demo assets · live Space inference temporarily unavailable",
+  "button": "Edit image",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "output_label": "edited image",
+  "input_image": "/root/code/qwen-image-edit-demo/input.png",
+  "prompt": "Turn this bus into a glossy futuristic red electric bus at sunset",
+  "before_image": "/root/code/qwen-image-edit-demo/input.png",
+  "after_image": "/root/code/qwen-image-edit-demo/output.png"
+}

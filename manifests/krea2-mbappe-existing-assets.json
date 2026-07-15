@@ -1,0 +1,21 @@
+{
+  "name": "krea2-mbappe-existing-assets",
+  "template": "edit",
+  "space": {
+    "id": "hugging-apps/krea2-identity-edit",
+    "emoji": "🧬",
+    "colorFrom": "blue",
+    "colorTo": "gray",
+    "likes": 29,
+    "hardware": "zero-a10g"
+  },
+  "meta": "existing assets · Krea 2 Identity Edit",
+  "button": "Edit",
+  "input_label": "source portrait",
+  "prompt_label": "instruction",
+  "output_label": "edited portrait",
+  "input_image": "/root/code/weekly-space-krea-identity/assets/mbappe/kylian_mbappe_france_norway_2026_wikiportraits.jpg",
+  "prompt": "Place the same person on a red carpet, editorial flash photography",
+  "before_image": "/root/code/weekly-space-krea-identity/assets/mbappe/kylian_mbappe_france_norway_2026_wikiportraits.jpg",
+  "after_image": "/root/code/weekly-space-krea-identity/assets/mbappe/mbappe_red_carpet_identity_edit.webp"
+}

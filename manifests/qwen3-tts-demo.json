@@ -1,0 +1,20 @@
+{
+  "name": "qwen3-tts-demo",
+  "template": "a2a",
+  "space": {
+    "id": "Qwen/Qwen3-TTS-Demo",
+    "emoji": "🚀",
+    "colorFrom": "gray",
+    "colorTo": "blue",
+    "likes": 409,
+    "hardware": "cpu-basic"
+  },
+  "prompt": "Plot twist! The voice you're hearing was created from text—warm, expressive, and ready in seconds.",
+  "audio_in": "/root/code/qwen3-tts-demo/work/live-audio/baseline-jennifer.wav",
+  "audio_out": "/root/code/qwen3-tts-demo/work/live-audio/expressive-ryan.wav",
+  "audio_label": "Jennifer · English",
+  "output_label": "Ryan · English",
+  "button": "Compare voices",
+  "meta": "two live TTS outputs · same script · cpu-basic",
+  "audio_gain": 2.0
+}

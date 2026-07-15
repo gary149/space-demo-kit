@@ -1,0 +1,18 @@
+{
+  "name": "ardy-motion-demo",
+  "template": "t2v",
+  "space": {
+    "id": "hugging-apps/ardy",
+    "emoji": "🕺",
+    "colorFrom": "gray",
+    "colorTo": "purple",
+    "likes": 1,
+    "hardware": "zero-a10g"
+  },
+  "prompt": "A person walks in a circle.",
+  "prompt_label": "motion prompt",
+  "output_label": "generated 3D motion",
+  "button": "Generate",
+  "video": "/root/code/ardy-demo/ardy-live-motion-cfr.mp4",
+  "meta": "live output · seed 314159 · zero-a10g"
+}

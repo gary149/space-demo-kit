@@ -1,0 +1,20 @@
+{
+  "name": "rxbrain-embodied-cognition-vqa",
+  "template": "vqa",
+  "space": {
+    "id": "hugging-apps/rxbrain-embodied-cognition",
+    "emoji": "🔮",
+    "colorFrom": "red",
+    "colorTo": "yellow",
+    "likes": 1,
+    "hardware": "zero-a10g"
+  },
+  "input_label": "observation image",
+  "prompt_label": "question",
+  "output_label": "RxBrain answer",
+  "button": "Answer",
+  "prompt": "In two concise sentences (30–40 words), identify every object the robot can manipulate and say where each is located.",
+  "video": "/root/code/rxbrain-embodied-cognition-demo/umi_sock_obs_vqa.mp4",
+  "answer": "The robot can manipulate the following objects: a black sock in the white compartment tray, a white sock in the pink basket, and a purple sock in the pink basket. The black sock is located in the white tray, while the white and purple socks are in the pink basket.",
+  "meta": "live /vqa output · zero-a10g"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "tencent-rosetta-demo",
+  "template": "t2v",
+  "space": {
+    "id": "hugging-apps/tencent-rosetta",
+    "emoji": "🪨",
+    "colorFrom": "indigo",
+    "colorTo": "blue",
+    "likes": 1,
+    "hardware": "zero-a10g"
+  },
+  "prompt": "A serene Japanese garden with a red maple tree beside a koi pond, soft morning light",
+  "prompt_label": "prompt",
+  "output_label": "generated image",
+  "button": "Generate",
+  "video": "/root/code/tencent-rosetta-demo/assets/rosetta_japanese_garden_static.mp4",
+  "meta": "live image output · static hold · zero-a10g"
+}

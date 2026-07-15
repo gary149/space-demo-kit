@@ -1,0 +1,21 @@
+{
+  "name": "omni-image-editor-demo",
+  "template": "edit",
+  "space": {
+    "id": "selfit-camera/Omni-Image-Editor",
+    "emoji": "🖼️",
+    "colorFrom": "blue",
+    "colorTo": "pink",
+    "likes": 2127,
+    "hardware": "cpu-upgrade"
+  },
+  "meta": "live output · cpu-upgrade",
+  "button": "Edit image",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "output_label": "edited image",
+  "input_image": "/root/code/omni-image-editor-demo/inputs/panda01.jpeg",
+  "prompt": "Turn the panda into an astronaut on the moon, keeping its pose and face.",
+  "before_image": "/root/code/omni-image-editor-demo/inputs/panda01.jpeg",
+  "after_image": "/root/code/omni-image-editor-demo/outputs/after-attempt1.png"
+}

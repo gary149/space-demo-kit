@@ -1,0 +1,18 @@
+{
+  "name": "ternary-vs-dense-27b",
+  "template": "t2v",
+  "space": {
+    "id": "huggingface/inference-playground",
+    "emoji": "🔋",
+    "colorFrom": "blue",
+    "colorTo": "pink",
+    "likes": 307,
+    "hardware": "cpu-upgrade"
+  },
+  "prompt": "Rewrite clearly in one sentence; output only the rewrite: The deployment was delayed because several unexpected issues were encountered.",
+  "prompt_label": "shared prompt",
+  "output_label": "native Playground comparison",
+  "button": "Compare",
+  "video": "/root/code/ternary-vs-dense-27b/artifacts/playground-comparison-final-hold.mp4",
+  "meta": "live providers · thinking off · dense base proxy, not GGUF runtime"
+}

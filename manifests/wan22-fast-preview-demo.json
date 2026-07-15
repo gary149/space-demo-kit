@@ -1,0 +1,23 @@
+{
+  "name": "wan22-fast-preview-demo",
+  "template": "i2v",
+  "space": {
+    "id": "zerogpu-aoti/wan2-2-fp8da-aoti-faster",
+    "title": "Wan2.2 14B Fast",
+    "emoji": "🎥",
+    "colorFrom": "gray",
+    "colorTo": "pink",
+    "short_description": "generate a video from an image with a text prompt",
+    "sdk": "gradio",
+    "likes": 3317,
+    "hardware": "zero-a10g"
+  },
+  "input_image": "/root/code/wan22-fast-preview-demo/artifacts/space-repo/wan_i2v_input.JPG",
+  "prompt": "The white cat surfs toward camera as turquoise water sparkles; ears twitch, fur ripples, and the board gently rocks. Smooth selfie camera.",
+  "video": "/root/code/wan22-fast-preview-demo/artifacts/wan22-live.mp4",
+  "button": "Generate Video",
+  "input_label": "source image",
+  "prompt_label": "motion prompt",
+  "output_label": "generated video",
+  "meta": "live output · zero-a10g"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "openmoss-team-moss-vl-realtime",
+  "template": "vqa",
+  "space": {
+    "id": "hugging-apps/openmoss-team-moss-vl-realtime",
+    "emoji": "👁️",
+    "colorFrom": "gray",
+    "colorTo": "indigo",
+    "likes": 4,
+    "hardware": "zero-a10g"
+  },
+  "input_label": "video (primary input)",
+  "prompt_label": "question",
+  "output_label": "live response",
+  "button": "Analyze",
+  "prompt": "In 40–50 words, explain why the customer and clerk disagree about the medium cup, and summarize how the conversation unfolds.",
+  "video": "/root/code/openmoss-team-moss-vl-realtime/assets/luoge-512p.mp4",
+  "answer": "The customer wants a medium cup, but the clerk insists it is a large cup. The customer insists, and the clerk clarifies the sizes. The customer then asks for a medium latte, and the clerk agrees.",
+  "meta": "live /analyze output · zero-a10g"
+}
