@@ -29,6 +29,8 @@ FONTS = {
     "source-sans-3-700.woff2": "https://cdn.jsdelivr.net/fontsource/fonts/source-sans-3@latest/latin-700-normal.woff2",
     "ibm-plex-mono-400.woff2": "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-400-normal.woff2",
     "ibm-plex-mono-500.woff2": "https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-500-normal.woff2",
+    "space-grotesk-500.woff2": "https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@latest/latin-500-normal.woff2",
+    "space-grotesk-700.woff2": "https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@latest/latin-700-normal.woff2",
 }
 TWEMOJI_BASE = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/"
 HF_LOGO_URL = "https://huggingface.co/front/assets/huggingface_logo-noborder.svg"
@@ -165,10 +167,27 @@ def main() -> None:
         runtime["after_image"] = Path(m["after_image"]).resolve().as_uri()
         runtime["after_aspect"] = image_aspect(Path(m["after_image"]))
     elif template == "a2a":
-        audio_play = Path(m["audio_out"])
         runtime["peaks_in"] = audio_peaks(Path(m["audio_in"]))
-        runtime["peaks_out"] = audio_peaks(audio_play)
-        runtime["audio_duration"] = media_duration(audio_play)
+        runtime["peaks_out"] = audio_peaks(Path(m["audio_out"]))
+        runtime["audio_duration"] = media_duration(Path(m["audio_out"]))
+        if m.get("audio_sequence"):
+            # play the input first, then the output (ORIGINAL -> ENHANCED storytelling)
+            seq = workdir / "sequence.wav"
+            if not seq.exists():
+                subprocess.run(
+                    ["ffmpeg", "-loglevel", "error", "-y",
+                     "-i", str(Path(m["audio_in"])), "-i", str(Path(m["audio_out"])),
+                     "-filter_complex", "[0:a][1:a]concat=n=2:v=0:a=1", str(seq)],
+                    check=True,
+                )
+            audio_play = seq
+            runtime["audio_duration_in"] = media_duration(Path(m["audio_in"]))
+            runtime["audio_duration_out"] = media_duration(Path(m["audio_out"]))
+        else:
+            audio_play = Path(m["audio_out"])
+    elif template == "t2i":
+        runtime["output_image"] = Path(m["output_image"]).resolve().as_uri()
+        runtime["output_aspect"] = image_aspect(Path(m["output_image"]))
     elif template == "gallery":
         runtime["outputs"] = [
             {"url": Path(o["path"]).resolve().as_uri(), "label": o["label"]}
@@ -198,7 +217,9 @@ def main() -> None:
     with sync_playwright() as pw:
         browser = pw.chromium.launch(args=["--force-color-profile=srgb"])
         page = browser.new_page(viewport={"width": WIDTH, "height": HEIGHT})
-        page.goto((KIT / "templates" / "app-window.html").as_uri())
+        style_files = {"poster": "poster.html", "fullbleed": "fullbleed.html", "cards": "cards.html"}
+        tpl = style_files.get(m.get("style"), "app-window.html")
+        page.goto((KIT / "templates" / tpl).as_uri())
         duration = page.evaluate("m => window.setup(m)", runtime)
         play_start = page.evaluate("() => window.__T.playStart ?? null")
         n = math.ceil(duration * FPS)

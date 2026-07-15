@@ -1,0 +1,21 @@
+{
+  "template": "a2a",
+  "audio_sequence": true,
+  "space": {
+    "id": "ResembleAI/resemble-enhance",
+    "emoji": "🚀",
+    "colorFrom": "red",
+    "colorTo": "pink",
+    "likes": 476,
+    "hardware": "zero-a10g"
+  },
+  "title": "Resemble Enhance",
+  "tagline": "noisy recording in · studio-clean speech out",
+  "label_in": "ORIGINAL",
+  "label_out": "ENHANCED",
+  "audio_in": "/root/code/space-demo-kit/assets/mock/voice_noisy.wav",
+  "audio_out": "/root/code/space-demo-kit/assets/mock/voice_clean.wav",
+  "meta": "mock demo assets",
+  "style": "cards",
+  "name": "x-resemble-cards"
+}

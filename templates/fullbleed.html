@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-500.woff2') format('woff2'); font-weight: 500; }
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-700.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-400.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-500.woff2') format('woff2'); font-weight: 500; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; transition: none !important; animation: none !important; }
+  html, body { width: 1440px; height: 1080px; overflow: hidden; }
+  body { font-family: 'Space Grotesk', sans-serif; background: #0c1015; color: #e8eaf0; }
+
+  #glow-a, #glow-b { position: absolute; width: 1100px; height: 1100px; border-radius: 50%; filter: blur(110px); opacity: .28; }
+  #glow-a { top: -420px; left: -320px; }
+  #glow-b { bottom: -460px; right: -340px; }
+
+  header { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 15px; padding: 40px 56px; z-index: 5; }
+  header img { width: 40px; height: 40px; }
+  #htitle { font-size: 38px; font-weight: 700; letter-spacing: .3px; }
+  #hslug { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: #8b93a1; }
+
+  /* a2a: two full-width wave zones */
+  #zones { position: absolute; top: 130px; bottom: 120px; left: 0; right: 0; display: flex; flex-direction: column; z-index: 2; }
+  .zone { position: relative; flex: 1; min-height: 0; }
+  .zone canvas { position: absolute; inset: 0 56px; width: calc(100% - 112px); height: 100%; }
+  .zlabel { position: absolute; top: 18px; left: 56px; font-size: 64px; font-weight: 700; letter-spacing: 2px; z-index: 3; }
+  #zone-divider { height: 2px; background: #232a35; margin: 0 56px; flex: none; }
+
+  #bottombar { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: baseline; padding: 34px 56px; z-index: 5; }
+  #btime { font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 500; }
+  #bstate { margin-left: auto; font-size: 30px; font-weight: 700; letter-spacing: 1.5px; }
+
+  /* t2i */
+  #prompt-stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; padding: 0 140px; }
+  #kicker { font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 500; letter-spacing: 3px; color: #8b93a1; margin-bottom: 34px; }
+  #bigprompt { width: 1160px; font-weight: 500; line-height: 1.32; color: #f2f4f8; }
+  #bcaret { display: inline-block; width: 5px; height: 1.05em; background: #ff9f43; vertical-align: text-bottom; margin-left: 4px; }
+  #result { position: absolute; inset: 0; z-index: 4; opacity: 0; overflow: hidden; }
+  #result img { width: 100%; height: 100%; object-fit: cover; }
+  #scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 240px; background: linear-gradient(transparent, rgba(5,8,12,.88)); }
+  #caption { position: absolute; left: 56px; right: 56px; bottom: 40px; display: flex; align-items: baseline; gap: 20px; }
+  #cap-prompt { font-size: 27px; font-weight: 500; color: #f2f4f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #cap-slug { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 23px; color: #c8cdd6; flex: none; }
+</style>
+</head>
+<body>
+  <div id="glow-a"></div><div id="glow-b"></div>
+  <header><img id="hemoji"><span id="htitle"></span><span id="hslug"></span></header>
+
+  <div id="zones">
+    <div class="zone" id="zone-in"><span class="zlabel" id="zl-in"></span><canvas id="wave-in"></canvas></div>
+    <div id="zone-divider"></div>
+    <div class="zone" id="zone-out"><span class="zlabel" id="zl-out"></span><canvas id="wave-out"></canvas></div>
+  </div>
+  <div id="bottombar"><span id="btime"></span><span id="bstate"></span></div>
+
+  <div id="prompt-stage">
+    <div id="kicker">PROMPT</div>
+    <div id="bigprompt"><span id="bptext"></span><span id="bcaret"></span></div>
+  </div>
+  <div id="result"><img id="oimg"><div id="scrim"></div>
+    <div id="caption"><span id="cap-prompt"></span><span id="cap-slug"></span></div>
+  </div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const lin=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const easeIO=p=>(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);
+const easeOut=p=>1-Math.pow(1-p,3);
+let M=null,T=null;
+const HF_COLORS={red:'#ff6b6b',orange:'#ffa94d',yellow:'#ffd43b',green:'#69db7c',blue:'#74c0fc',indigo:'#91a7ff',purple:'#d0a9f5',pink:'#faa2c1',gray:'#adb5bd'};
+const A_WARM='#ff8a3d', A_COOL='#5ac8fa';
+
+function fitText(el,availH,min,max){let lo=min,hi=max;while(hi-lo>.5){const m=(lo+hi)/2;el.style.fontSize=m+'px';(el.offsetHeight<=availH)?lo=m:hi=m;}el.style.fontSize=lo+'px';return lo;}
+async function preload(u){const i=new Image();i.src=u;try{await i.decode();}catch{}return i;}
+function truncPrompt(p,max=190){if(p.length<=max+18)return p;const c=p.slice(0,max);return c.slice(0,c.lastIndexOf(' '))+'…';}
+
+function drawWave(cv,peaks,played,on,off,ph){
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,n=peaks.length;
+  ctx.clearRect(0,0,W,H);
+  const shape=()=>{ctx.beginPath();ctx.moveTo(0,H/2);
+    for(let i=0;i<n;i++)ctx.lineTo((i+.5)*W/n,H/2-Math.max(2.5,peaks[i]*H*.42));
+    ctx.lineTo(W,H/2);
+    for(let i=n-1;i>=0;i--)ctx.lineTo((i+.5)*W/n,H/2+Math.max(2.5,peaks[i]*H*.42));
+    ctx.closePath();};
+  ctx.fillStyle=off;shape();ctx.fill();
+  if(played>0){ctx.save();ctx.beginPath();ctx.rect(0,0,W*played,H);ctx.clip();ctx.fillStyle=on;shape();ctx.fill();ctx.restore();}
+  if(ph&&played>0&&played<1){const x=W*played;ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,10);ctx.lineTo(x,H-10);ctx.stroke();}
+}
+
+window.setup = async m => {
+  M=m;
+  const from=HF_COLORS[m.space.colorFrom]||'#adb5bd', to=HF_COLORS[m.space.colorTo]||'#adb5bd';
+  $('glow-a').style.background=`radial-gradient(circle, ${from} 0%, transparent 70%)`;
+  $('glow-b').style.background=`radial-gradient(circle, ${to} 0%, transparent 70%)`;
+  $('hemoji').src=m.emoji_url;
+  $('htitle').textContent=m.title||m.space.title||m.space.id.split('/')[1];
+  $('hslug').textContent='hf.co/spaces/'+m.space.id;
+  await document.fonts.ready;
+
+  if (M.template==='a2a') {
+    $('prompt-stage').style.display='none'; $('result').style.display='none';
+    $('zl-in').textContent=(m.label_in||'ORIGINAL').toUpperCase();
+    $('zl-out').textContent=(m.label_out||'ENHANCED').toUpperCase();
+    for(const id of ['wave-in','wave-out']){const cv=$(id),r=cv.getBoundingClientRect();cv.width=r.width;cv.height=r.height;}
+    const dIn=m.audio_duration_in,dOut=m.audio_duration_out,total=dIn+dOut;
+    T={playStart:.9,dIn,dOut,total,end:.9+total+1.5};
+  } else { // t2i
+    $('zones').style.display='none'; $('bottombar').style.display='none';
+    M.promptShown=truncPrompt('“'+M.prompt+'”');
+    $('bptext').textContent=M.promptShown;
+    fitText($('bigprompt'),560,34,78);
+    $('bptext').textContent='';
+    await preload(M.output_image);
+    $('cap-prompt').textContent=M.prompt;
+    $('cap-slug').textContent='hf.co/spaces/'+M.space.id;
+    const typeEnd=.4+Math.min(5.55,M.promptShown.length/25);
+    T={typeEnd,reveal:[typeEnd+1.1,typeEnd+1.8],end:typeEnd+6.3,playStart:null};
+  }
+  window.__T=T;
+  return T.end;
+};
+
+window.seek = async t => {
+  const hp=easeOut(lin(t,0,.5));
+  document.querySelector('header').style.opacity=hp;
+
+  if (M.template==='a2a') {
+    ['zone-in','zone-out','bottombar'].forEach((id,i)=>{
+      const p=easeOut(lin(t,.08+i*.08,.55+i*.08));
+      $(id).style.opacity=p;
+    });
+    const {playStart,dIn,dOut,total}=T;
+    const el=t-playStart, phase=el<0?-1: el<dIn?0: el<total?1: 2;
+    const pIn=phase<0?0:phase===0?el/dIn:1;
+    const pOut=phase<1?0:phase===1?(el-dIn)/dOut:1;
+    drawWave($('wave-in'),M.peaks_in,pIn, A_WARM, phase===0?'rgba(255,138,61,.28)':'#20262f', phase===0);
+    drawWave($('wave-out'),M.peaks_out,pOut, A_COOL, phase===1?'rgba(90,200,250,.28)':'#20262f', phase===1);
+    $('zl-in').style.color = phase===0? A_WARM : '#39414d';
+    $('zl-out').style.color = phase===1? A_COOL : '#39414d';
+    if(phase===2){$('zl-out').style.color=A_COOL;}
+    $('btime').textContent=clamp(el,0,total).toFixed(1).padStart(4,'0')+' / '+total.toFixed(1);
+    $('btime').style.color = phase===1?A_COOL:phase===0?A_WARM:'#e8eaf0';
+    $('bstate').textContent = phase<=0? '1 · '+(M.label_in||'ORIGINAL').toUpperCase()
+      : phase===1? '2 · '+(M.label_out||'ENHANCED').toUpperCase() : '→ TRY IT LIVE';
+    $('bstate').style.color = phase<=0? A_WARM : phase===1? A_COOL : '#e8eaf0';
+  } else {
+    const shown=Math.round(easeIO(lin(t,.4,T.typeEnd))*M.promptShown.length);
+    $('bptext').textContent=M.promptShown.slice(0,shown);
+    $('bcaret').style.opacity=shown<M.promptShown.length?(((t*2.5)%1)<.55?1:0):0;
+    $('prompt-stage').style.opacity=1-lin(t,T.reveal[0],T.reveal[0]+.45);
+    const rp=easeOut(lin(t,T.reveal[0],T.reveal[1]));
+    const res=$('result');
+    res.style.opacity=rp;
+    if(t>=T.reveal[0]&&!$('oimg').src)$('oimg').src=M.output_image;
+    $('oimg').style.transform=`scale(${1+.045*lin(t,T.reveal[0],T.end)})`;
+    $('caption').style.opacity=easeOut(lin(t,T.reveal[1],T.reveal[1]+.5));
+    document.querySelector('header').style.opacity=hp*(1-rp); // header fully yields to the image
+  }
+};
+</script>
+</body>
+</html>

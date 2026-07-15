@@ -1,0 +1,19 @@
+{
+  "template": "t2i",
+  "space": {
+    "id": "mrfakename/Z-Image-Turbo",
+    "emoji": "🖼️",
+    "colorFrom": "yellow",
+    "colorTo": "yellow",
+    "likes": 3550,
+    "hardware": "zero-a10g"
+  },
+  "title": "Z-Image Turbo",
+  "tagline": "text → image · turbo",
+  "prompt": "Macro photo of a tiny dragon curled inside a translucent strawberry, morning dew, luminous wings, dark forest bokeh, hyperreal, cinematic light",
+  "output_image": "/root/code/z-image-turbo-demo/z-image-turbo-live.png",
+  "output_label": "generated image",
+  "meta": "live output · zero-a10g",
+  "style": "poster",
+  "name": "x-zimage-poster"
+}

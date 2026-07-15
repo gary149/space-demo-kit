@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-500.woff2') format('woff2'); font-weight: 500; }
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-700.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'Source Sans 3'; src: url('../fonts/source-sans-3-400.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Source Sans 3'; src: url('../fonts/source-sans-3-600.woff2') format('woff2'); font-weight: 600; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-500.woff2') format('woff2'); font-weight: 500; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; transition: none !important; animation: none !important; }
+  html, body { width: 1440px; height: 1080px; overflow: hidden; }
+  body { font-family: 'Source Sans 3', sans-serif; background: #f2ecdf; }
+  :root { --rust: #a84e14; --steel: #3e6c8e; --ink: #1d3a5e; }
+
+  #wrap { position: absolute; inset: 0; padding: 56px 68px 44px; display: flex; flex-direction: column; }
+  #title { font-family: 'Space Grotesk'; font-weight: 700; color: #1d3a5e; line-height: 1.04; letter-spacing: -1px; }
+  #tagline { font-size: 31px; font-weight: 600; color: rgba(29,58,94,.78); margin-top: 10px; }
+
+  .wcard { position: relative; border: 5px solid var(--c); border-radius: 22px; background: rgba(255,255,255,.5); padding: 16px 26px 12px; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #cards { display: flex; flex-direction: column; gap: 24px; margin-top: 30px; flex: 1; min-height: 0; }
+  .wlabel-row { display: flex; align-items: baseline; }
+  .wlabel { font-family: 'Space Grotesk'; font-size: 34px; font-weight: 700; letter-spacing: 1px; color: var(--c); }
+  .wtime { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 23px; font-weight: 500; color: var(--c); opacity: .85; }
+  .wcard canvas { display: block; width: 100%; flex: 1; min-height: 0; }
+  .wt0 { position: absolute; left: 26px; bottom: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: var(--c); }
+
+  #nowline { display: flex; align-items: baseline; margin-top: 26px; }
+  #now-label { font-family: 'Space Grotesk'; font-size: 43px; font-weight: 700; letter-spacing: .5px; color: var(--rust); }
+  #now-time { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 29px; font-weight: 500; color: #1d3a5e; }
+  #pills { display: flex; gap: 26px; margin-top: 16px; }
+  .pill { flex: 1; }
+  .pill .bar { height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--c) 16%, transparent); overflow: hidden; }
+  .pill .fill { height: 100%; width: 0; border-radius: 7px; background: var(--c); }
+  .pill .plabel { margin-top: 9px; font-family: 'Space Grotesk'; font-size: 23px; font-weight: 700; letter-spacing: .5px; color: var(--c); }
+
+  /* t2i */
+  #pcard { margin-top: 0; }
+  #pcard .ptext { font-size: 40px; line-height: 1.32; color: #2b2b23; padding: 8px 2px 10px; }
+  #pcaret { display: inline-block; width: 4px; height: 1.1em; background: var(--rust); vertical-align: text-bottom; margin-left: 2px; }
+  #genline { margin-top: 0; height: 12px; border-radius: 6px; background: rgba(168,78,20,.14); overflow: hidden; opacity: 0; }
+  #genbar { width: 30%; height: 100%; border-radius: 6px; background: var(--rust); }
+  #icard { margin-top: 0; }
+  #iwrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #iwrap img { max-width: 100%; max-height: 100%; border-radius: 12px; }
+
+  footer { display: flex; align-items: center; gap: 13px; margin-top: 26px; }
+  footer img { width: 30px; height: 30px; }
+  #slug { font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; color: #1d3a5e; }
+  #meta { margin-left: auto; font-size: 21px; color: rgba(29,58,94,.6); }
+</style>
+</head>
+<body>
+  <div id="wrap">
+    <div id="title"></div>
+    <div id="tagline"></div>
+    <div id="cards">
+      <div class="wcard" id="card-in" style="--c: var(--rust)">
+        <div class="wlabel-row"><span class="wlabel" id="label-in"></span><span class="wtime" id="time-in"></span></div>
+        <canvas id="wave-in"></canvas>
+        <span class="wt0">0:00</span>
+      </div>
+      <div class="wcard" id="card-out" style="--c: var(--steel)">
+        <div class="wlabel-row"><span class="wlabel" id="label-out"></span><span class="wtime" id="time-out"></span></div>
+        <canvas id="wave-out"></canvas>
+        <span class="wt0">0:00</span>
+      </div>
+      <div class="wcard" id="pcard" style="--c: var(--rust); flex: none; display: none;">
+        <div class="wlabel-row"><span class="wlabel">PROMPT</span></div>
+        <div class="ptext"><span id="ptext"></span><span id="pcaret"></span></div>
+      </div>
+      <div id="genline"><div id="genbar"></div></div>
+      <div class="wcard" id="icard" style="--c: var(--steel); display: none;">
+        <div class="wlabel-row"><span class="wlabel" id="ilabel">GENERATED IMAGE</span><span class="wtime" id="itime"></span></div>
+        <div id="iwrap"><img id="oimg"></div>
+      </div>
+    </div>
+    <div id="nowline"><span id="now-label"></span><span id="now-time"></span></div>
+    <div id="pills">
+      <div class="pill" style="--c: var(--rust)"><div class="bar"><div class="fill" id="fill-1"></div></div><div class="plabel" id="pl-1"></div></div>
+      <div class="pill" style="--c: var(--steel)"><div class="bar"><div class="fill" id="fill-2"></div></div><div class="plabel" id="pl-2"></div></div>
+    </div>
+    <footer><img id="hf-emoji"><span id="slug"></span><span id="meta"></span></footer>
+  </div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+const lin = (t,a,b)=>clamp((t-a)/(b-a),0,1);
+const easeIO = p=>(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);
+const easeOut = p=>1-Math.pow(1-p,3);
+let M=null, T=null;
+
+function fitText(el, availH, min, max){let lo=min,hi=max;while(hi-lo>.5){const m=(lo+hi)/2;el.style.fontSize=m+'px';(el.offsetHeight<=availH)?lo=m:hi=m;}el.style.fontSize=lo+'px';return lo;}
+async function preload(u){const i=new Image();i.src=u;try{await i.decode();}catch{}return i;}
+function truncPrompt(p,max=170){if(p.length<=max+18)return p;const c=p.slice(0,max);return c.slice(0,c.lastIndexOf(' '))+'…';}
+function fmtClock(s){const m=Math.floor(s/60);const sec=(s%60).toFixed(1);return m+':'+(sec.length<4?'0':'')+sec;}
+
+function drawWave(cv, peaks, played, on, off, ph){
+  const ctx=cv.getContext('2d'), W=cv.width, H=cv.height, n=peaks.length;
+  ctx.clearRect(0,0,W,H);
+  const shape=()=>{ctx.beginPath();ctx.moveTo(0,H/2);
+    for(let i=0;i<n;i++)ctx.lineTo((i+.5)*W/n,H/2-Math.max(2.5,peaks[i]*H*.46));
+    ctx.lineTo(W,H/2);
+    for(let i=n-1;i>=0;i--)ctx.lineTo((i+.5)*W/n,H/2+Math.max(2.5,peaks[i]*H*.46));
+    ctx.closePath();};
+  ctx.fillStyle=off; shape(); ctx.fill();
+  if(played>0){ctx.save();ctx.beginPath();ctx.rect(0,0,W*played,H);ctx.clip();ctx.fillStyle=on;shape();ctx.fill();ctx.restore();}
+  ctx.fillStyle=on; ctx.globalAlpha=.5; ctx.fillRect(0,H/2-1,W,2); ctx.globalAlpha=1;
+  if(ph && played>0 && played<1){const x=W*played;ctx.strokeStyle=on;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,6);ctx.lineTo(x,H-2);ctx.stroke();ctx.beginPath();ctx.arc(x,6,7,0,7);ctx.fillStyle=on;ctx.fill();}
+}
+
+window.setup = async m => {
+  M=m;
+  $('title').textContent = m.title || m.space.title || m.space.id.split('/')[1];
+  fitText($('title'), 220, 54, 96);
+  $('hf-emoji').src = m.hf_emoji_url;
+  $('slug').textContent = 'hf.co/spaces/' + m.space.id;
+  $('meta').textContent = m.meta || '';
+  await document.fonts.ready;
+
+  if (M.template === 'a2a') {
+    $('tagline').textContent = m.tagline || ((m.label_in||'ORIGINAL')+' first · '+(m.label_out||'ENHANCED')+' second.');
+    const dIn=m.audio_duration_in, dOut=m.audio_duration_out, total=dIn+dOut;
+    $('label-in').textContent=(m.label_in||'ORIGINAL').toUpperCase();
+    $('label-out').textContent=(m.label_out||'ENHANCED').toUpperCase();
+    $('time-in').textContent=fmtClock(dIn); $('time-out').textContent=fmtClock(dOut);
+    $('pl-1').textContent='1  '+(m.label_in||'ORIGINAL').toUpperCase()+' · '+dIn.toFixed(1)+' SEC';
+    $('pl-2').textContent='2  '+(m.label_out||'ENHANCED').toUpperCase()+' · '+dOut.toFixed(1)+' SEC';
+    for (const id of ['wave-in','wave-out']) { const cv=$(id), r=cv.getBoundingClientRect(); cv.width=r.width; cv.height=r.height; }
+    T={playStart:1.05, dIn, dOut, total, end:1.05+total+1.5};
+  } else { // t2i
+    $('tagline').textContent = m.tagline || 'text → image';
+    $('card-in').style.display='none'; $('card-out').style.display='none';
+    $('nowline').style.display='none'; $('pills').style.display='none';
+    $('pcard').style.display='flex'; $('icard').style.display='flex';
+    $('icard').style.flex='1';
+    $('ilabel').textContent=(M.output_label||'GENERATED IMAGE').toUpperCase();
+    M.promptShown = truncPrompt('“'+M.prompt+'”');
+    $('ptext').textContent=M.promptShown;
+    fitText($('pcard').querySelector('.ptext'), 140, 24, 38);
+    // lock the prompt card at its full-text height so the layout never
+    // reflows while the prompt types on
+    $('pcard').style.height=$('pcard').offsetHeight+'px';
+    $('ptext').textContent='';
+    await preload(M.output_image);
+    { // now the image card height is stable: size the output image to fill it
+      const r=$('iwrap').getBoundingClientRect();
+      const ar=M.output_aspect||1;
+      let h=r.height-4, w=h*ar;
+      if(w>r.width-4){w=r.width-4;h=w/ar;}
+      const img=$('oimg'); img.style.width=w+'px'; img.style.height=h+'px';
+    }
+    const typeEnd=.5+Math.min(5.55,M.promptShown.length/25);
+    T={typeEnd, gen:[typeEnd+.7,typeEnd+1.8], reveal:[typeEnd+1.8,typeEnd+2.5], end:typeEnd+5.4, playStart:null};
+    $('itime').textContent='';
+  }
+  window.__T=T;
+  return T.end;
+};
+
+window.seek = async t => {
+  // intro slide-fade
+  [['title',0],['tagline',.08],['cards',.16],['nowline',.26],['pills',.3]].forEach(([id,d])=>{
+    const p=easeOut(lin(t,d,d+.5)); const el=$(id);
+    el.style.opacity=p; el.style.transform=`translateY(${(1-p)*16}px)`;
+  });
+  document.querySelector('footer').style.opacity=easeOut(lin(t,.35,.85));
+
+  if (M.template==='a2a') {
+    const {playStart,dIn,dOut,total}=T;
+    const el=t-playStart, phase = el<0?-1: el<dIn?0: el<total?1: 2;
+    const pIn = phase<0?0: phase===0? el/dIn : 1;
+    const pOut = phase<1?0: phase===1? (el-dIn)/dOut : 1;
+    drawWave($('wave-in'), M.peaks_in, pIn, '#a84e14', 'rgba(168,78,20,.32)', phase===0);
+    drawWave($('wave-out'), M.peaks_out, pOut, '#3e6c8e', 'rgba(62,108,142,.30)', phase===1);
+    $('card-in').style.opacity = (phase===1)? .55 : 1;
+    $('card-out').style.opacity = (phase===0)? .55 : (phase>=1?1:.85);
+    $('fill-1').style.width=(pIn*100)+'%'; $('fill-2').style.width=(pOut*100)+'%';
+    const lab=(n)=> (n===0? (M.label_in||'ORIGINAL') : (M.label_out||'ENHANCED')).toUpperCase();
+    if (phase<=0){ $('now-label').textContent='NOW PLAYING: '+lab(0); $('now-label').style.color='#a84e14'; }
+    else if (phase===1){ $('now-label').textContent='NOW PLAYING: '+lab(1); $('now-label').style.color='#3e6c8e'; }
+    else { $('now-label').textContent='→ TRY IT LIVE'; $('now-label').style.color='#1d3a5e'; }
+    $('now-time').textContent=(clamp(el,0,total)).toFixed(1).padStart(4,'0')+' / '+total.toFixed(1)+' SEC';
+  } else {
+    const shown=Math.round(easeIO(lin(t,.5,T.typeEnd))*M.promptShown.length);
+    $('ptext').textContent=M.promptShown.slice(0,shown);
+    $('pcaret').style.opacity = shown<M.promptShown.length ? (((t*2.5)%1)<.55?1:0) : 0;
+    const inGen = t>=T.gen[0] && t<T.gen[1];
+    $('genline').style.opacity = inGen?1:0;
+    if(inGen){ $('genbar').style.marginLeft=((-30+((t-T.gen[0])/.5%1)*130)+'%'); }
+    const rp=easeOut(lin(t,T.reveal[0],T.reveal[1]));
+    const img=$('oimg');
+    img.style.opacity=rp;
+    img.style.clipPath=`inset(0 ${(1-rp)*100}% 0 0 round 12px)`;
+    if(t>=T.reveal[0]&&!img.src)img.src=M.output_image;
+    img.style.transform=`scale(${1+.015*lin(t,T.reveal[1],T.end)})`;
+    $('itime').textContent = t>=T.reveal[1] ? 'LIVE OUTPUT' : (inGen?'GENERATING…':'');
+  }
+};
+</script>
+</body>
+</html>
