@@ -415,7 +415,11 @@ window.setup = async manifest => {
   let press;
   if (wantHero) {
     HERO = {};
-    if (!HAS.image) { $('hero-mlabel').style.display = 'none'; $('hero-img').style.display = 'none'; }
+    if (!HAS.image) { // prompt-only hero: keep the label chip so frame zero is not empty
+      $('hero-img').style.display = 'none'; $('hero-play').style.display = 'none';
+      $('hero-mlabel').querySelector('svg').style.display = 'none';
+      $('hero-label-text').textContent = (M.prompt_label || 'prompt').toUpperCase();
+    }
     if (HAS.image) {
       const img = $('input-img');
       const to = img.getBoundingClientRect();
@@ -546,8 +550,9 @@ window.seek = async t => {
     const done = t >= H.morph[1];
     $('hero').style.display = done ? 'none' : 'block';
     if (!done) {
-      const ip = easeOut(lin(t, H.in[0], H.in[1]));
-      const chipFade = ip * (1 - lin(t, H.morph[0], H.morph[0] + .3));
+      const ip = 1; // frame zero must already show the input (feed thumbnail = first frame)
+      const settleP = easeOut(lin(t, H.in[0], H.in[1]));
+      const chipFade = 1 - lin(t, H.morph[0], H.morph[0] + .3);
       if (HERO.imgFrom) {
         $('input-img').style.opacity = lin(mp, .8, 1); // panel copy appears only as the hero fades into it
         const r = lerpRect(HERO.imgFrom, HERO.imgTo, mp);
@@ -555,7 +560,7 @@ window.seek = async t => {
         $('hero-img').style.opacity = ip * (1 - lin(mp, .8, 1)); // crossfade into the panel's own image
         $('hero-img').style.borderRadius = lerp(14, 0, mp) + 'px';
         $('hero-img').style.boxShadow = `0 26px 70px rgba(15,20,40,${.28 * Math.max(0, 1 - mp * 1.6)})`;
-        $('hero-img').style.transform = `translateY(${(1 - ip) * 18}px)`;
+        $('hero-img').style.transform = `scale(${1.02 - .02 * settleP})`;
         const ml = $('hero-mlabel');
         ml.style.left = (r.left + 14) + 'px'; ml.style.top = (r.top + 14) + 'px';
         ml.style.opacity = chipFade;
@@ -563,6 +568,12 @@ window.seek = async t => {
         hp.style.left = (r.left + r.width / 2 - 46) + 'px';
         hp.style.top = (r.top + r.height / 2 - 46) + 'px';
         hp.style.opacity = chipFade;
+      }
+      if (!HERO.imgFrom && HAS.prompt) { // chip above the typing block
+        const ml = $('hero-mlabel');
+        ml.style.left = HERO.prFrom.left + 'px';
+        ml.style.top = (HERO.prFrom.top - 64) + 'px';
+        ml.style.opacity = chipFade;
       }
       if (HAS.prompt) {
         const shown = Math.round(easeIO(lin(t, H.in[1], H.typeEnd)) * PROMPT_SHOWN.length);
