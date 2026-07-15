@@ -124,6 +124,16 @@
   #thinking-chip { position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 9px; background: rgba(255,124,0,.1); border-radius: 999px; padding: 9px 18px; font-size: 17px; font-weight: 700; letter-spacing: .5px; color: #d9660a; z-index: 6; opacity: 0; }
   #thinking-chip .tdot { width: 9px; height: 9px; border-radius: 50%; background: #ff7c00; }
 
+  /* hero intro: the input opens near full-frame, then morphs into its panel slot */
+  #hero { position: absolute; inset: 0; z-index: 50; display: none; }
+  #hero-img { position: absolute; border-radius: 14px; box-shadow: 0 26px 70px rgba(15,20,40,.28); object-fit: contain; }
+  #hero-mlabel { position: absolute; display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 9px 18px; font-size: 18px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #4b5563; box-shadow: 0 2px 10px rgba(0,0,0,.14); }
+  #hero-mlabel svg { width: 20px; height: 20px; stroke: #6b7280; flex: none; }
+  #hero-play { position: absolute; width: 92px; height: 92px; border-radius: 50%; background: rgba(17,24,39,.5); display: none; align-items: center; justify-content: center; }
+  #hero-play svg { width: 36px; height: 36px; fill: #fff; margin-left: 5px; }
+  #hero-prompt { position: absolute; color: #2f3541; line-height: 1.35; }
+  #hero-caret { display: inline-block; width: 4px; background: #ff7c00; vertical-align: text-bottom; margin-left: 2px; }
+
   footer { height: 62px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 26px; border-top: 2px solid #f1f2f4; }
   #slug { display: flex; align-items: center; gap: 11px; font-family: 'IBM Plex Mono', monospace; font-size: 24px; color: #5b6472; white-space: nowrap; }
   #slug img { width: 29px; height: 29px; }
@@ -220,6 +230,16 @@
     </footer>
   </div>
 
+  <div id="hero">
+    <img id="hero-img">
+    <div id="hero-mlabel">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      <span id="hero-label-text"></span>
+    </div>
+    <div id="hero-play"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>
+    <div id="hero-prompt"><span id="hero-prompt-text"></span><span id="hero-caret"></span></div>
+  </div>
+
 <script>
 'use strict';
 /* Deterministic, seekable demo animation. window.setup(manifest) -> duration (s);
@@ -244,7 +264,23 @@ const easeIO = p => (p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
 const easeOut = p => 1 - Math.pow(1 - p, 3);
 
 let M = null, T = null, FRAMES = [], INPUT_FRAMES = [], PROMPT_SHOWN = '';
+let HERO = null; // {imgFrom, imgTo, prFrom, prTo} rects for the intro morph
 const HAS = { prompt: false, image: false, audio: false };
+
+const lerp = (a, b, p) => a + (b - a) * p;
+const lerpRect = (a, b, p) => ({
+  left: lerp(a.left, b.left, p), top: lerp(a.top, b.top, p),
+  width: lerp(a.width, b.width, p), height: lerp(a.height, b.height, p),
+});
+function setRect(el, r) {
+  el.style.left = r.left + 'px'; el.style.top = r.top + 'px';
+  el.style.width = r.width + 'px'; el.style.height = r.height + 'px';
+}
+function containFit(aw, ah, maxW, maxH) { // aspect-fit a media box, centered horizontally
+  let w = maxW, h = w * ah / aw;
+  if (h > maxH) { h = maxH; w = h * aw / ah; }
+  return { width: w, height: h };
+}
 
 function hexOf(name) { return HF_COLORS[name] || '#9ca3af'; }
 function fmtLikes(n) {
@@ -352,11 +388,45 @@ window.setup = async manifest => {
   }
 
   PROMPT_SHOWN = HAS.prompt ? truncPrompt(M.prompt) : '';
-  const typeEnd = HAS.prompt ? .25 + Math.min(1.45, PROMPT_SHOWN.length / 105) : .85;
-  const press = [typeEnd + .2, typeEnd + .5];
+
+  // --- hero intro: input opens near full-frame, then morphs into the layout ---
+  const wantHero = (HAS.image || HAS.prompt) && M.template !== 'a2a' && M.hero !== false;
+  let press;
+  if (wantHero) {
+    HERO = {};
+    if (HAS.image) {
+      const img = $('input-img');
+      const to = img.getBoundingClientRect();
+      const maxH = HAS.prompt ? 600 : 800;
+      const fit = containFit(img.naturalWidth || 1, img.naturalHeight || 1, 1000, maxH);
+      HERO.imgFrom = { left: (1440 - fit.width) / 2, top: 96, ...fit };
+      HERO.imgTo = { left: to.left, top: to.top, width: to.width, height: to.height };
+      $('hero-img').src = M.input_image;
+      $('hero-label-text').textContent = M.input_label || 'input image';
+      if (M.template === 'vqa') $('hero-play').style.display = 'flex';
+    }
+    if (HAS.prompt) {
+      const pb = document.querySelector('.prompt-body');
+      const pr = pb.getBoundingClientRect();
+      const toFs = parseFloat(getComputedStyle(pb).fontSize);
+      HERO.prTo = { left: pr.left + 16, top: pr.top + 2, width: pr.width - 32, fs: toFs };
+      HERO.prFrom = HAS.image
+        ? { left: 220, top: HERO.imgFrom.top + HERO.imgFrom.height + 44, width: 1000, fs: 40 }
+        : { left: 190, top: 340, width: 1060, fs: 46 };
+    }
+    const heroIn = [0, .35];
+    const heroType = HAS.prompt ? .45 + Math.min(1.85, PROMPT_SHOWN.length / 75) : 1.05;
+    const morph = [heroType + .3, heroType + 1.15];
+    T = { hero: { in: heroIn, typeEnd: heroType, morph } };
+    press = [morph[1] + .25, morph[1] + .55];
+  } else {
+    const typeEnd = HAS.prompt ? .25 + Math.min(1.45, PROMPT_SHOWN.length / 105) : .85;
+    T = {};
+    press = [typeEnd + .2, typeEnd + .5];
+  }
   const progress = [press[1], press[1] + .85];
   const reveal = [progress[1], progress[1] + .3];
-  T = { press, progress, reveal };
+  T.press = press; T.progress = progress; T.reveal = reveal;
 
   if (['i2v', 't2v', 'avatar'].includes(M.template)) {
     FRAMES = [];
@@ -435,8 +505,54 @@ function setSlider(pct) {
 }
 
 window.seek = async t => {
-  // --- typing ---
-  if (HAS.prompt) {
+  // --- hero intro: big input + big prompt morphing into the app layout ---
+  if (T.hero) {
+    const H = T.hero;
+    const mp = easeIO(lin(t, H.morph[0], H.morph[1]));
+    $('window').style.opacity = mp;
+    const done = t >= H.morph[1];
+    $('hero').style.display = done ? 'none' : 'block';
+    if (!done) {
+      const ip = easeOut(lin(t, H.in[0], H.in[1]));
+      const chipFade = ip * (1 - lin(t, H.morph[0], H.morph[0] + .3));
+      if (HERO.imgFrom) {
+        const r = lerpRect(HERO.imgFrom, HERO.imgTo, mp);
+        setRect($('hero-img'), r);
+        $('hero-img').style.opacity = ip;
+        $('hero-img').style.borderRadius = lerp(14, 4, mp) + 'px';
+        $('hero-img').style.boxShadow = `0 26px 70px rgba(15,20,40,${.28 * (1 - mp)})`;
+        $('hero-img').style.transform = `translateY(${(1 - ip) * 18}px)`;
+        const ml = $('hero-mlabel');
+        ml.style.left = (r.left + 14) + 'px'; ml.style.top = (r.top + 14) + 'px';
+        ml.style.opacity = chipFade;
+        const hp = $('hero-play');
+        hp.style.left = (r.left + r.width / 2 - 46) + 'px';
+        hp.style.top = (r.top + r.height / 2 - 46) + 'px';
+        hp.style.opacity = chipFade;
+      }
+      if (HAS.prompt) {
+        const shown = Math.round(easeIO(lin(t, H.in[1], H.typeEnd)) * PROMPT_SHOWN.length);
+        $('hero-prompt-text').textContent = PROMPT_SHOWN.slice(0, shown);
+        const pr = {
+          left: lerp(HERO.prFrom.left, HERO.prTo.left, mp),
+          top: lerp(HERO.prFrom.top, HERO.prTo.top, mp),
+          width: lerp(HERO.prFrom.width, HERO.prTo.width, mp),
+        };
+        const fs = lerp(HERO.prFrom.fs, HERO.prTo.fs, mp);
+        const el = $('hero-prompt');
+        el.style.left = pr.left + 'px'; el.style.top = pr.top + 'px';
+        el.style.width = pr.width + 'px'; el.style.fontSize = fs + 'px';
+        el.style.opacity = Math.min(1, ip) * (1 - lin(t, H.morph[0] + .3, H.morph[0] + .72));
+        const typing = shown < PROMPT_SHOWN.length;
+        $('hero-caret').style.height = (fs * 1.15) + 'px';
+        $('hero-caret').style.opacity = typing && mp === 0 ? (((t * 2.5) % 1) < .55 ? 1 : 0) : 0;
+      }
+    }
+    if (HAS.prompt) { // panel shows the final text; typing happened in the hero
+      $('prompt-text').textContent = PROMPT_SHOWN;
+      $('caret').style.opacity = 0;
+    }
+  } else if (HAS.prompt) {
     const tp = lin(t, .25, T.press[0] - .2 + .001);
     const shown = Math.round(easeIO(tp) * PROMPT_SHOWN.length);
     $('prompt-text').textContent = PROMPT_SHOWN.slice(0, shown);
