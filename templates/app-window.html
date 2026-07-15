@@ -444,7 +444,7 @@ window.setup = async manifest => {
       HERO.prFrom = { left: HAS.image ? 220 : 190, top: heroTop, width: heroW, fs: hfs };
     }
     const heroIn = [0, .35];
-    const heroType = HAS.prompt ? .45 + Math.min(1.85, PROMPT_SHOWN.length / 75) : 1.05;
+    const heroType = HAS.prompt ? .45 + Math.min(3.7, PROMPT_SHOWN.length / 38) : 1.05;
     const morph = [heroType + .3, heroType + 1.15];
     T = { hero: { in: heroIn, typeEnd: heroType, morph } };
     press = [morph[1] + .25, morph[1] + .55];
