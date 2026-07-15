@@ -1,0 +1,24 @@
+{
+  "name": "viral-krea",
+  "template": "edit",
+  "style": "viral",
+  "space": {
+    "id": "hugging-apps/krea2-identity-edit",
+    "title": "Krea 2 Identity Edit",
+    "emoji": "🧬",
+    "colorFrom": "blue",
+    "colorTo": "gray",
+    "likes": 29,
+    "hardware": "zero-a10g"
+  },
+  "title": "Krea 2 Identity Edit",
+  "tagline": "image + instruction → edited image",
+  "input_image": "/root/code/weekly-space-krea-identity/assets/woman.jpg",
+  "input_label": "source image",
+  "prompt_label": "edit instruction",
+  "output_label": "edited image",
+  "prompt": "create a photo of this person at a busy night market at night",
+  "before_image": "/root/code/weekly-space-krea-identity/assets/woman.jpg",
+  "after_image": "/root/code/weekly-space-krea-identity/assets/woman_night_market_edited.webp",
+  "meta": "live output · zero-a10g"
+}

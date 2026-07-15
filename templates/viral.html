@@ -1,0 +1,735 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-500.woff2') format('woff2'); font-weight: 500; }
+  @font-face { font-family: 'Space Grotesk'; src: url('../fonts/space-grotesk-700.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'Source Sans 3'; src: url('../fonts/source-sans-3-400.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Source Sans 3'; src: url('../fonts/source-sans-3-600.woff2') format('woff2'); font-weight: 600; }
+  @font-face { font-family: 'Source Sans 3'; src: url('../fonts/source-sans-3-700.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-400.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-500.woff2') format('woff2'); font-weight: 500; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; transition: none !important; animation: none !important; }
+  html, body { width: 1440px; height: 1080px; overflow: hidden; }
+  body { font-family: 'Source Sans 3', sans-serif; background: #F3EADA; position: relative; }
+
+  :root {
+    --paper: #F3EADA;
+    --ink: #241C14;
+    --ink-70: rgba(36,28,20,.70);
+    --ink-45: rgba(36,28,20,.45);
+    --line: rgba(36,28,20,.12);
+    --rust: #9A3D1C;
+    --rust-25: rgba(154,61,28,.25);
+    --steel: #2E5266;
+    --steel-25: rgba(46,82,102,.25);
+  }
+
+  /* ---- shared type roles (§3.2) ---- */
+  .r-display { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: .96; color: var(--ink); white-space: nowrap; }
+  .r-subhead { font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 32px; letter-spacing: 0; line-height: 1.3; color: var(--ink-70); white-space: nowrap; overflow: hidden; }
+  .r-eyebrow { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 26px; letter-spacing: .10em; line-height: 1; text-transform: uppercase; }
+  .r-body { font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 40px; letter-spacing: 0; line-height: 1.35; color: var(--ink); }
+  .r-data { font-family: 'IBM Plex Mono', monospace; font-weight: 400; font-size: 28px; letter-spacing: .02em; line-height: 1; color: var(--ink-45); font-variant-numeric: tabular-nums; }
+  .r-footer { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 30px; letter-spacing: .01em; line-height: 1; white-space: nowrap; }
+  .role-rust { color: var(--rust); }
+  .role-steel { color: var(--steel); }
+
+  /* ---- overlays ---- */
+  #grain { position: absolute; inset: 0; opacity: .035; mix-blend-mode: multiply; background-repeat: repeat; background-size: 512px 512px; pointer-events: none; z-index: 60; }
+  #vignette {
+    position: absolute; inset: 0; pointer-events: none; z-index: 61; mix-blend-mode: multiply;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(36,28,20,.05), transparent 55%),
+      radial-gradient(circle at 100% 0%, rgba(36,28,20,.05), transparent 55%),
+      radial-gradient(circle at 0% 100%, rgba(36,28,20,.05), transparent 55%),
+      radial-gradient(circle at 100% 100%, rgba(36,28,20,.05), transparent 55%);
+  }
+
+  /* ---- shared grid chrome (§3.1) ---- */
+  #title { position: absolute; left: 96px; top: 96px; width: 1248px; height: 112px; font-size: 108px; overflow: hidden; }
+  #tagline { position: absolute; left: 96px; top: 232px; width: 1248px; height: 40px; }
+  #hr-top { position: absolute; left: 96px; top: 296px; width: 1248px; height: 1.5px; background: var(--line); }
+  #hr-bottom { position: absolute; left: 96px; top: 928px; width: 1248px; height: 1.5px; background: var(--line); z-index: 45; }
+  #footer { position: absolute; left: 96px; top: 952px; width: 1248px; height: 32px; display: flex; align-items: center; z-index: 45; }
+  #footer img { width: 32px; height: 32px; margin-right: 16px; flex: none; }
+  #footer-url { color: var(--ink-70); }
+  #footer-note { margin-left: auto; color: var(--ink-45); }
+  #footer-scrim { position: absolute; left: 0; top: 900px; width: 1440px; height: 180px; background: linear-gradient(to bottom, transparent, rgba(243,234,218,.96) 46%); opacity: 0; z-index: 40; pointer-events: none; }
+  #caption-scrim { position: absolute; left: 0; top: 740px; width: 1440px; height: 190px; background: linear-gradient(to bottom, transparent, rgba(243,234,218,.94)); opacity: 0; z-index: 39; pointer-events: none; }
+
+  /* ---- Lane component ---- */
+  .lane { position: absolute; border-radius: 12px; border-style: solid; box-sizing: border-box; overflow: hidden; background: var(--paper); }
+  .lane img, .lane canvas { display: block; width: 100%; height: 100%; }
+  .lane-rust { border-color: var(--rust); }
+  .lane-steel { border-color: var(--steel); }
+
+  /* ==================== t2i ==================== */
+  #zone-t2i { display: none; }
+  #t2i-eyebrow { position: absolute; left: 96px; top: 328px; width: 1248px; height: 26px; }
+  /* font-size/line-height tightened from the shared .r-body 40px/1.35 so the full,
+     never-truncated prompt (defect #5) reliably fits in fewer reserved lines, freeing
+     height for the image Lane (defects #1/#8) — layout math measures this at runtime. */
+  #t2i-caption { position: absolute; left: 96px; top: 362px; width: 1248px; overflow: hidden; font-size: 34px; line-height: 1.28; }
+  .phrase { background-image: linear-gradient(var(--rust), var(--rust)); background-repeat: no-repeat; background-position: 0 1.1em; background-size: 0% 4px; }
+  #t2i-lane { border-width: 3px; }
+  #t2i-img-wrap { position: absolute; inset: 0; will-change: transform; }
+  /* defect #1/#4: Lane box is now pre-sized to the REAL measured source aspect
+     (setupT2I), so contain==cover and no real pixels are ever cropped (§3.5). */
+  #t2i-img-wrap img { object-fit: contain; object-position: center; }
+  #t2i-glow { position: absolute; width: 220px; height: 220px; left: 56%; top: 30%; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle, rgba(154,61,28,.55), transparent 68%); opacity: 0; pointer-events: none; }
+
+  /* ==================== a2a ==================== */
+  #zone-a2a { display: none; }
+  .a2a-eyebrow { position: absolute; width: 900px; height: 26px; }
+  .a2a-time { position: absolute; width: 340px; height: 26px; text-align: right; }
+  .a2a-card { position: absolute; left: 96px; width: 1248px; }
+  #a2a-lane-in, #a2a-lane-out { width: 1248px; height: 160px; border-width: 3px; }
+  #a2a-cue { position: absolute; left: 718px; width: 4px; background: var(--ink-45); opacity: 0; transform-origin: top center; }
+  #a2a-status { position: absolute; left: 96px; width: 1248px; }
+  #a2a-rule-track { position: absolute; left: 0; top: 0; width: 1248px; height: 4px; background: var(--line); border-radius: 2px; overflow: visible; }
+  #a2a-fill-in, #a2a-fill-out { position: absolute; top: 0; height: 4px; border-radius: 2px; width: 0; }
+  #a2a-fill-in { left: 0; background: var(--rust); }
+  #a2a-fill-out { background: var(--steel); }
+  #a2a-cta { position: absolute; left: 0; top: 20px; opacity: 0; }
+  #a2a-counter { position: absolute; right: 0; top: 18px; }
+
+  /* ==================== i2v ==================== */
+  #zone-i2v { display: none; }
+  .i2v-eyebrow { position: absolute; height: 26px; }
+  /* persistent short-form prompt (spec §5.3 Frame Zero + §6 word-budget=16): sits between
+     the top hairline and the PHOTO/VIDEO rail eyebrows, fades with the rest of the header
+     chrome once the reframe hero goes full-bleed. */
+  #i2v-prompt-short { position: absolute; left: 96px; top: 328px; width: 1248px; height: 26px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 24px; line-height: 26px; color: var(--ink-70); z-index: 15; }
+  #i2v-rail-video { border-width: 3px; z-index: 10; }
+  #i2v-rail-video img { object-fit: cover; will-change: transform; }
+  #i2v-photo-el { border-width: 3px; z-index: 20; }
+  #i2v-photo-el img { object-fit: cover; }
+  /* left/top are driven per-frame off the chip's own interpolating rect (defect #10) —
+     no hardcoded pre/post position here. */
+  #i2v-chip-label { position: absolute; opacity: 0; z-index: 21; }
+  /* top is set at setup-time from the measured caption height (defect #7: full prompt,
+     never truncated); font tightened from the shared .r-body 40px so 3 lines fit above
+     the footer/hairline band without collision. */
+  #i2v-full-caption { position: absolute; left: 96px; width: 1248px; overflow: hidden; opacity: 0; z-index: 41; color: var(--ink); font-size: 34px; line-height: 1.26; }
+
+  /* ==================== edit ==================== */
+  #zone-edit { display: none; }
+  #edit-caption { position: absolute; left: 96px; top: 328px; width: 1248px; overflow: hidden; }
+  #edit-lane { border-width: 3px; border-color: var(--ink); }
+  #edit-before-img, #edit-after-img { position: absolute; inset: 0; object-fit: cover; }
+  #edit-after-img { will-change: clip-path; }
+  #edit-sweep { position: absolute; top: -10%; width: 10px; height: 120%; opacity: 0; background: linear-gradient(90deg, transparent, rgba(243,234,218,.85), transparent); transform-origin: center; z-index: 5; }
+  .edit-tag { position: absolute; height: 26px; }
+  #edit-tag-before { left: 0; }
+  #edit-tag-after { right: 0; }
+  .loupe { position: absolute; width: 56px; height: 56px; border-radius: 50%; background-repeat: no-repeat; overflow: hidden; opacity: 0; box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--c); z-index: 6; }
+  #edit-caption { font-size: 36px; line-height: 1.3; }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="grain"></div>
+
+    <div id="title" class="r-display"></div>
+    <div id="tagline" class="r-subhead"></div>
+    <div id="hr-top"></div>
+
+    <!-- ===== t2i ===== -->
+    <div id="zone-t2i">
+      <div id="t2i-eyebrow" class="r-eyebrow role-rust entrance-lane">PROMPT</div>
+      <div id="t2i-caption" class="r-body entrance-lane"></div>
+      <div id="t2i-lane" class="lane lane-steel entrance-lane">
+        <div id="t2i-img-wrap"><img id="t2i-img"><div id="t2i-glow"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== a2a ===== -->
+    <div id="zone-a2a">
+      <div class="a2a-card entrance-lane" id="a2a-card-in" style="top:366px;">
+        <div class="a2a-eyebrow r-eyebrow role-rust" style="left:0;top:0;" id="a2a-label-in"></div>
+        <div class="a2a-time r-data" style="left:908px;top:0;" id="a2a-time-in"></div>
+        <canvas id="a2a-lane-in" class="lane lane-rust" style="left:0;top:34px;"></canvas>
+      </div>
+      <div class="a2a-card entrance-lane" id="a2a-card-out" style="top:608px;">
+        <div class="a2a-eyebrow r-eyebrow role-steel" style="left:0;top:0;" id="a2a-label-out"></div>
+        <div class="a2a-time r-data" style="left:908px;top:0;" id="a2a-time-out"></div>
+        <canvas id="a2a-lane-out" class="lane lane-steel" style="left:0;top:34px;"></canvas>
+      </div>
+      <div id="a2a-cue" style="top:560px;height:48px;"></div>
+      <div id="a2a-status" class="entrance-status" style="top:834px;">
+        <div id="a2a-rule-track">
+          <div id="a2a-fill-in"></div>
+          <div id="a2a-fill-out"></div>
+        </div>
+        <div id="a2a-cta" class="r-eyebrow role-rust">&rarr; TRY IT LIVE</div>
+        <div id="a2a-counter" class="r-data"></div>
+      </div>
+    </div>
+
+    <!-- ===== i2v ===== -->
+    <div id="zone-i2v">
+      <div id="i2v-prompt-short" class="entrance-lane"></div>
+      <div class="i2v-eyebrow r-eyebrow role-rust entrance-lane" id="i2v-eyebrow-photo">PHOTO</div>
+      <div class="i2v-eyebrow r-eyebrow role-steel entrance-lane" id="i2v-eyebrow-video">VIDEO</div>
+      <div id="i2v-rail-video" class="lane lane-steel entrance-lane"><img id="i2v-video-img"></div>
+      <div id="i2v-photo-el" class="lane lane-rust entrance-lane"><img id="i2v-photo-rail-img"></div>
+      <div id="i2v-chip-label" class="r-eyebrow role-rust">PHOTO</div>
+      <div id="i2v-full-caption" class="r-body"></div>
+    </div>
+
+    <!-- ===== edit ===== -->
+    <div id="zone-edit">
+      <div id="edit-caption" class="r-body entrance-lane"></div>
+      <div id="edit-lane" class="lane entrance-lane">
+        <img id="edit-before-img">
+        <img id="edit-after-img">
+        <div id="edit-sweep"></div>
+        <div class="loupe" id="edit-loupe-before" style="--c: var(--rust);"></div>
+        <div class="loupe" id="edit-loupe-after" style="--c: var(--steel);"></div>
+      </div>
+      <div class="edit-tag r-eyebrow role-rust entrance-lane" id="edit-tag-before">BEFORE</div>
+      <div class="edit-tag r-eyebrow role-steel entrance-lane" id="edit-tag-after">AFTER</div>
+    </div>
+
+    <div id="caption-scrim"></div>
+    <div id="footer-scrim"></div>
+    <div id="hr-bottom"></div>
+    <div id="footer" class="entrance-lane">
+      <img id="footer-emoji">
+      <span id="footer-url" class="r-footer"></span>
+      <span id="footer-note" class="r-footer"></span>
+    </div>
+
+    <div id="vignette"></div>
+  </div>
+
+<script>
+'use strict';
+/* space-demo-kit — viral.html
+   Canonical design spec: DESIGN_SPEC.md (Cold-Open Split). Contract:
+   window.setup(manifest) -> duration_seconds (async ok); window.seek(t) renders
+   the exact state for time t. Deterministic: no Date.now/Math.random/rAF. */
+
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lin = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// ---- named easing curves (§4.1) ----
+const snap = p => (p === 1 ? 1 : 1 - Math.pow(2, -10 * p));
+const punch = (() => { const c1 = 1.70158, c3 = c1 + 1; return p => 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); })();
+const wipe = p => Math.sqrt(1 - Math.pow(p - 1, 2));
+const settle = p => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const glide = p => p;
+const driftLoop = periodS => tGlobal => (Math.sin((tGlobal / periodS) * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+
+let M = null, T = null, MODE = null, FRAMES = [];
+
+function lerpRect(a, b, p) {
+  return { left: lerp(a.left, b.left, p), top: lerp(a.top, b.top, p), width: lerp(a.width, b.width, p), height: lerp(a.height, b.height, p) };
+}
+function setRect(el, r) {
+  el.style.left = r.left + 'px'; el.style.top = r.top + 'px';
+  el.style.width = r.width + 'px'; el.style.height = r.height + 'px';
+}
+async function preload(url) {
+  const img = new Image(); img.src = url;
+  try { await img.decode(); } catch { await new Promise(r => setTimeout(r, 60)); try { await img.decode(); } catch {} }
+  return img;
+}
+function quoteWrap(el, maxH, raw) {
+  const words = raw.split(' ');
+  el.textContent = '“' + raw + '”';
+  if (el.offsetHeight <= maxH) return el.textContent;
+  let w = words.slice();
+  while (w.length > 1) {
+    w.pop();
+    const cand = '“' + w.join(' ') + '…' + '”';
+    el.textContent = cand;
+    if (el.offsetHeight <= maxH) return cand;
+  }
+  return el.textContent;
+}
+function highlightPhrase(el, phrase) {
+  if (!phrase) return false;
+  const txt = el.textContent;
+  const idx = txt.toLowerCase().indexOf(phrase.toLowerCase());
+  if (idx < 0) return false;
+  el.innerHTML = txt.slice(0, idx) + '<span id="t2i-phrase" class="phrase">' + txt.slice(idx, idx + phrase.length) + '</span>' + txt.slice(idx + phrase.length);
+  return true;
+}
+function fmtClock(s) {
+  s = Math.max(0, s);
+  const m = Math.floor(s / 60);
+  const sec = (s % 60).toFixed(1).padStart(4, '0');
+  return m + ':' + sec;
+}
+
+// ---- deterministic seeded grain (§3.4) ----
+function seededGrain(seed) {
+  let s = seed >>> 0;
+  const rnd = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(512, 512);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.floor(rnd() * 255);
+    img.data[i] = v; img.data[i + 1] = v; img.data[i + 2] = v; img.data[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  return c.toDataURL();
+}
+
+function fitTitle() {
+  const el = $('title');
+  let lo = 60, hi = 108;
+  while (hi - lo > .5) {
+    const mid = (lo + hi) / 2; el.style.fontSize = mid + 'px';
+    if (el.scrollWidth <= 1248) lo = mid; else hi = mid;
+  }
+  el.style.fontSize = lo + 'px';
+}
+
+// ---- shared entrance micro-settle (§4.3) ----
+function applyEntrance(t) {
+  const s = (el, delay, dist) => { const p = snap(clamp(lin(t, delay, delay + .16), 0, 1)); el.style.transform = `translateY(${(1 - p) * dist}px)`; };
+  s($('title'), 0, 8);
+  s($('tagline'), .04, 8);
+  document.querySelectorAll('.entrance-lane').forEach(el => s(el, .08, 6));
+  document.querySelectorAll('.entrance-status').forEach(el => s(el, .12, 4));
+  s($('footer'), .16, 4);
+}
+function applyGrain(t) {
+  const off = (t * 24) % 512;
+  $('grain').style.backgroundPosition = `${-off}px ${-off * .6}px`;
+}
+
+// ==================== setup ====================
+window.setup = async manifest => {
+  M = manifest; MODE = M.template;
+  await document.fonts.ready;
+  $('grain').style.backgroundImage = `url(${seededGrain(1440108)})`;
+
+  $('footer-emoji').src = M.emoji_url;
+  $('footer-url').textContent = 'hf.co/spaces/' + M.space.id;
+  if (M.space.id.length > 34) { $('footer-url').style.fontSize = '26px'; $('footer-note').style.fontSize = '26px'; }
+  $('footer-note').textContent = (M.meta && /mock/i.test(M.meta)) ? 'mock demo assets' : '';
+
+  $('title').textContent = M.title || (M.space.title) || M.space.id.split('/')[1];
+  fitTitle();
+  $('tagline').textContent = M.tagline || '';
+
+  document.getElementById('zone-' + MODE).style.display = 'block';
+
+  let duration;
+  if (MODE === 't2i') duration = await setupT2I();
+  else if (MODE === 'a2a') duration = await setupA2A();
+  else if (MODE === 'i2v') duration = await setupI2V();
+  else if (MODE === 'edit') duration = await setupEdit();
+  else throw new Error('viral.html: unsupported template ' + MODE);
+
+  window.__T = T;
+  return duration;
+};
+
+// ==================== t2i ====================
+async function setupT2I() {
+  const outImg = await preload(M.output_image);
+  $('t2i-img').src = M.output_image;
+
+  // t2i's Frame Zero row bans truncation entirely (spec §5.1 / defect #5): render every
+  // word of the prompt, no quoteWrap/ellipsis path for this modality, ever.
+  $('t2i-caption').textContent = '“' + M.prompt + '”';
+  highlightPhrase($('t2i-caption'), M.causality_phrase || null);
+
+  // Lane footprint (decision #8 / checklist #5, defects #1/#8): measure the caption's
+  // ACTUAL rendered height (it varies with prompt length) instead of reserving a fixed
+  // 160px whether or not the caption needs it, and let the image Lane claim all the
+  // Body Zone height that frees up, down to the bottom hairline.
+  const captionTop = 362, captionGap = 16;
+  const laneTop = captionTop + $('t2i-caption').offsetHeight + captionGap;
+  const laneH = 928 - laneTop;
+
+  // Lane sizing (SPEC §3.5, defects #1/#4): the box MUST be derived from the real
+  // measured naturalWidth/naturalHeight of the actual output asset — never an
+  // independent aspect clamp — so object-fit:contain==cover and zero real pixels are
+  // cropped. A hardcoded landscape band forced a square/portrait source to be cover-
+  // cropped to fill a mismatched box, which is exactly the "NEVER crop real output"
+  // violation this rule exists to prevent (same device i2v's rail-sizing already uses
+  // correctly below). If this leaves payoff area under the 60%-of-Body-Zone target for
+  // a square/portrait source, that must be solved by shrinking the caption reservation
+  // (captionTop/captionGap above), never by forcing a mismatched box aspect.
+  const rawAspect = outImg.naturalWidth / outImg.naturalHeight;
+  if (rawAspect <= 1.15) {
+    // square/portrait output: caption column left, media claims the FULL Body Zone
+    // height on the right (media > 50% of the zone beats the stacked layout for
+    // narrow aspects; stacked stays for landscape where width fills anyway).
+    const colW = 560;
+    $('t2i-eyebrow').style.width = colW + 'px';
+    $('t2i-caption').style.width = colW + 'px';
+    const zoneTop = 328, zoneH = 928 - zoneTop;
+    let h = zoneH, w = h * rawAspect;
+    const availW = 1344 - (96 + colW + 48);
+    if (w > availW) { w = availW; h = w / rawAspect; }
+    Object.assign($('t2i-lane').style, { left: (1344 - w) + 'px', top: (zoneTop + (zoneH - h) / 2) + 'px', width: w + 'px', height: h + 'px' });
+  } else {
+    const laneW = Math.min(1248, laneH * rawAspect);
+    Object.assign($('t2i-lane').style, { left: (96 + (1248 - laneW) / 2) + 'px', top: laneTop + 'px', width: laneW + 'px', height: laneH + 'px' });
+  }
+
+  T = { end: 8.0 };
+  return T.end;
+}
+function seekT2I(t) {
+  let scale;
+  if (t < .4) scale = lerp(1.01, 1.00, punch(clamp(t / .4, 0, 1)));
+  else if (t < 1.2) scale = 1.00;
+  else if (t < 4.6) scale = lerp(1.00, 1.12, glide(lin(t, 1.2, 4.6)));
+  else if (t < 5.6) scale = 1.12;
+  else scale = lerp(1.12, 1.00, glide(lin(t, 5.6, 8.0)));
+  $('t2i-img-wrap').style.transform = `scale(${scale})`;
+  $('t2i-img-wrap').style.transformOrigin = '56% 30%';
+
+  const phrase = $('t2i-phrase');
+  if (phrase) phrase.style.backgroundSize = (wipe(clamp(lin(t, .4, .65), 0, 1)) * 100) + '% 4px';
+  const bell = Math.sin(Math.PI * clamp(lin(t, .4, .7), 0, 1));
+  const gscale = 1 + .22 * punch(clamp(lin(t, .4, .55), 0, 1));
+  $('t2i-glow').style.opacity = bell * .9;
+  $('t2i-glow').style.transform = `translate(-50%,-50%) scale(${gscale})`;
+
+  const up = Math.sin(Math.PI * clamp(lin(t, 5.6, 8.0), 0, 1));
+  $('footer-url').style.filter = `brightness(${1 + .12 * up})`;
+}
+
+// ==================== a2a ====================
+async function setupA2A() {
+  const dIn = M.audio_duration_in, dOut = M.audio_duration_out, total = dIn + dOut;
+  $('a2a-label-in').textContent = (M.label_in || 'ORIGINAL').toUpperCase();
+  $('a2a-label-out').textContent = (M.label_out || 'ENHANCED').toUpperCase();
+  $('a2a-time-in').textContent = fmtClock(dIn);
+  $('a2a-time-out').textContent = fmtClock(dOut);
+  [$('a2a-lane-in'), $('a2a-lane-out')].forEach(cv => { cv.width = 1248; cv.height = 160; });
+  const segInW = (dIn / total) * 1248, segOutW = (dOut / total) * 1248;
+  $('a2a-fill-out').style.left = segInW + 'px';
+  // playStart must live on T itself: the top-level setup() dispatcher assigns
+  // window.__T = T *after* this returns, which would clobber a separately-set
+  // window.__T here and silently drop audio muxing in render.py.
+  T = { dIn, dOut, total, segInW, segOutW, end: total, playStart: 0.0 };
+  return T.end;
+}
+function drawWave(cv, peaks, played, role, activeNow, t) {
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, n = peaks.length;
+  ctx.clearRect(0, 0, W, H);
+  const full = role === 'rust' ? '#9A3D1C' : '#2E5266';
+  const dim = role === 'rust' ? 'rgba(154,61,28,.28)' : 'rgba(46,82,102,.28)';
+  const bw = W / n;
+  for (let i = 0; i < n; i++) {
+    const h = Math.max(3, peaks[i] * H * .88);
+    const playedHere = (i + .5) / n <= played;
+    ctx.fillStyle = playedHere ? full : dim;
+    const x = i * bw + bw * .18, y = (H - h) / 2, w = bw * .64, rad = Math.min(2.5, bw * .3);
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, rad); else ctx.rect(x, y, w, h);
+    ctx.fill();
+  }
+  ctx.globalAlpha = .35; ctx.fillStyle = full; ctx.fillRect(0, H / 2 - 1, W, 2); ctx.globalAlpha = 1;
+  if (activeNow && played > 0 && played < 1) {
+    const x = W * played;
+    ctx.strokeStyle = full; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x, 4); ctx.lineTo(x, H - 4); ctx.stroke();
+    const pulse = driftLoop(.5)(t);
+    const r = 5 + 3 * pulse;
+    ctx.beginPath(); ctx.arc(x, 4 + r, r, 0, Math.PI * 2); ctx.fillStyle = full; ctx.fill();
+  }
+}
+function seekA2A(t) {
+  const { dIn, dOut, total, segInW, segOutW } = T;
+  const phase = t < dIn ? 0 : 1;
+  const pIn = phase === 0 ? t / dIn : 1;
+  const pOut = phase < 1 ? 0 : clamp((t - dIn) / dOut, 0, 1);
+  drawWave($('a2a-lane-in'), M.peaks_in, pIn, 'rust', phase === 0, t);
+  drawWave($('a2a-lane-out'), M.peaks_out, pOut, 'steel', phase === 1, t);
+
+  const ignT = clamp(lin(t, 5.2, 5.5), 0, 1);
+  const ignActive = t >= 5.2 && t < 5.5;
+  const inOp = t < 5.2 ? 1 : lerp(1, .55, settle(ignT));
+  const outOp = t < 5.2 ? .55 : lerp(.55, 1, settle(ignT));
+  $('a2a-card-in').style.opacity = inOp;
+  $('a2a-card-out').style.opacity = outOp;
+  $('a2a-card-out').style.transform = ignActive ? `scale(${1 + .03 * Math.sin(Math.PI * ignT)})` : 'scale(1)';
+
+  const cueP = snap(clamp(lin(t, 1.2, 1.8), 0, 1));
+  $('a2a-cue').style.transform = `scaleY(${cueP})`;
+  $('a2a-cue').style.opacity = cueP;
+
+  $('a2a-fill-in').style.width = (pIn * segInW) + 'px';
+  $('a2a-fill-out').style.width = (pOut * segOutW) + 'px';
+
+  $('a2a-counter').textContent = fmtClock(clamp(t, 0, total)) + ' / ' + fmtClock(total);
+  $('a2a-cta').style.opacity = lin(t, 9.6, 10.2);
+}
+
+// ==================== i2v ====================
+async function setupI2V() {
+  FRAMES = [];
+  for (let i = 0; i < M.frame_files.length; i += 24) await Promise.all(M.frame_files.slice(i, i + 24).map(preload));
+  for (const f of M.frame_files) { const im = new Image(); im.src = f; FRAMES.push(im); }
+  const photoImg = await preload(M.input_image);
+  $('i2v-photo-rail-img').src = M.input_image;
+  const frame0 = await preload(M.frame_files[0]);
+
+  // persistent short-form prompt (spec §5.3 Frame Zero row + §6 word-budget=16, defect
+  // #7): previously no prompt text of any kind was visible until the t=6.5s outro. A
+  // clipped ~16-word form shown from t=0 satisfies the Frame Zero requirement; the full,
+  // untruncated prompt still un-collapses at the outro below.
+  const promptWords = M.prompt.split(' ');
+  const shortPrompt = promptWords.slice(0, 16).join(' ') + (promptWords.length > 16 ? '…' : '');
+  $('i2v-prompt-short').textContent = '“' + shortPrompt + '”';
+
+  const eyebrowTop = 328 + 26 + 10; // below the new prompt-short row + gap
+  const railTop = eyebrowTop + 26 + 8, railH = 928 - railTop;
+  const gap = 16;
+  // matched framing (defect #6 / spec §3.7,§5.3): size each rail from ITS OWN source
+  // aspect at the shared rail height instead of an arbitrary fixed 32/68 width split —
+  // the fixed split forced two independently cover-cropped assets to wildly different
+  // effective zoom levels even though the underlying photo/video frame-0 share nearly
+  // identical native framing. Centered as a pair so no fixed-split leftover shows up as
+  // dead space on one side only.
+  const photoAspect = photoImg.naturalWidth / photoImg.naturalHeight;
+  const videoAspect = frame0.naturalWidth / frame0.naturalHeight;
+  const photoW = Math.round(railH * photoAspect);
+  const videoW = Math.round(railH * videoAspect);
+  const pairW = photoW + gap + videoW;
+  const railLeft = 96 + Math.max(0, (1248 - pairW) / 2);
+  const photoFrom = { left: railLeft, top: railTop, width: photoW, height: railH };
+  const videoFrom = { left: railLeft + photoW + gap, top: railTop, width: videoW, height: railH };
+  const photoTo = { left: 24, top: 24, width: 200, height: 200 };
+  const videoTo = { left: 0, top: 0, width: 1440, height: 1080 };
+  setRect($('i2v-photo-el'), photoFrom);
+  setRect($('i2v-rail-video'), videoFrom);
+  Object.assign($('i2v-eyebrow-photo').style, { left: photoFrom.left + 'px', top: eyebrowTop + 'px' });
+  Object.assign($('i2v-eyebrow-video').style, { left: videoFrom.left + 'px', top: eyebrowTop + 'px' });
+
+  const videoDur = M.frame_count / M.video_fps;
+  // outro caption must show the FULL prompt, never truncated (spec §2.1 "full prompt
+  // caption un-collapses", defect #7) — measure its real height at the tightened font
+  // size and position it to clear the hairline/footer band instead of guessing a fixed
+  // top that forced a 2-line ellipsis cutoff.
+  $('i2v-full-caption').textContent = '“' + M.prompt + '”';
+  const fullPromptText = $('i2v-full-caption').textContent;
+  $('i2v-full-caption').style.top = Math.max(700, 916 - $('i2v-full-caption').offsetHeight) + 'px';
+  $('i2v-full-caption').textContent = '';
+  T = { photoFrom, photoTo, videoFrom, videoTo, videoDur, holdStart: clamp(videoDur, 1.4, 7.4), fullPromptText, end: 8.0 };
+  return T.end;
+}
+function seekI2V(t) {
+  const { photoFrom, photoTo, videoFrom, videoTo, videoDur, holdStart, fullPromptText } = T;
+  const frac = clamp(t / videoDur, 0, 1);
+  const idx = clamp(Math.round(frac * (M.frame_count - 1)), 0, M.frame_count - 1);
+  const im = FRAMES[idx];
+  if (im && im.src && $('i2v-video-img').src !== im.src) $('i2v-video-img').src = im.src;
+
+  // HERO reframe MORPH (defect #6): raw expo-out `snap` fed the full linear progress
+  // directly, so at 30fps/9 discrete samples the curve's naturally front-loaded shape
+  // put the video card at ~54% grown after just ONE sampled frame (t=1.033s) — reading
+  // as a ~2-frame pop/jump-cut instead of a legible 300ms reveal. Warping progress
+  // through an exponent before feeding `snap` spreads the visible growth across the
+  // full 9-frame window while still ending on a decisive, fast finish by t=1.3s.
+  const morphP = clamp(lin(t, 1.0, 1.3), 0, 1);
+  const mp = snap(Math.pow(morphP, 1.6));
+  setRect($('i2v-rail-video'), lerpRect(videoFrom, videoTo, mp));
+  $('i2v-rail-video').style.borderWidth = (3 * (1 - mp)) + 'px';
+  $('i2v-rail-video').style.borderRadius = (12 * (1 - mp)) + 'px';
+  const curPhotoRect = lerpRect(photoFrom, photoTo, mp);
+  setRect($('i2v-photo-el'), curPhotoRect);
+  $('i2v-photo-el').style.borderRadius = '12px';
+
+  // header chrome (title/tagline/prompt-short/top hairline/rail eyebrows) — defect
+  // #3/#6: this used to fade out in lockstep with `mp` (the position/size MORPH), which
+  // meant a still-~46%-opaque title/tagline was simultaneously visible AND overlapped by
+  // the already-growing video card, reading as a garbled double-exposure glitch at the
+  // single hero moment of the video. Fade this chrome to 0 on its OWN fixed window that
+  // completes strictly BEFORE t=1.0 (when the reframe MORPH starts moving the video's
+  // bounding box at all), so there is never a frame where semi-opaque glyphs and the
+  // growing media card occupy overlapping pixels. The footer dock (url, hairline,
+  // scrim) is a hard requirement and stays visible the whole time — it just gets a
+  // scrim once the video sits behind it.
+  const headerOp = 1 - settle(clamp(lin(t, 0.82, 1.0), 0, 1));
+  $('title').style.opacity = headerOp; $('tagline').style.opacity = headerOp; $('hr-top').style.opacity = headerOp;
+  $('i2v-eyebrow-photo').style.opacity = headerOp; $('i2v-eyebrow-video').style.opacity = headerOp;
+  $('i2v-prompt-short').style.opacity = headerOp;
+  // chip label: position derived every frame from the SAME interpolated rect that drives
+  // the chip's own box geometry (defect #10) — never a separately-timed/hardcoded
+  // pre/post position — with a real >=12px clear gap below the chip's own border so the
+  // label never sits on media pixels nor crowds the border (minor defect).
+  $('i2v-chip-label').style.left = curPhotoRect.left + 'px';
+  $('i2v-chip-label').style.top = (curPhotoRect.top + curPhotoRect.height + 12) + 'px';
+  $('i2v-chip-label').style.opacity = mp > .7 ? lin(mp, .7, 1) : 0;
+  $('footer-scrim').style.opacity = mp;
+
+  if (mp >= .999) {
+    const driftP = clamp(lin(t, 1.3, T.end), 0, 1);
+    const kb = lerp(1.008, 1.02, glide(driftP));
+    $('i2v-video-img').style.transform = `scale(${kb})`;
+  } else {
+    $('i2v-video-img').style.transform = 'scale(1)';
+  }
+
+  const outroP = clamp(lin(t, holdStart, holdStart + .6), 0, 1);
+  if (outroP > 0 && $('i2v-full-caption').textContent !== fullPromptText) $('i2v-full-caption').textContent = fullPromptText;
+  $('i2v-full-caption').style.opacity = settle(outroP);
+  $('caption-scrim').style.opacity = settle(outroP);
+
+  const up = Math.sin(Math.PI * clamp(lin(t, holdStart, T.end), 0, 1));
+  $('footer-url').style.filter = `brightness(${1 + .12 * up})`;
+}
+
+// ==================== edit ====================
+async function setupEdit() {
+  const beforeImg = await preload(M.before_image); await preload(M.after_image);
+
+  const rawAr0 = beforeImg.naturalWidth / beforeImg.naturalHeight;
+  const sideBySide = rawAr0 <= 1.15;
+  if (sideBySide) $('edit-caption').style.width = '520px';
+  quoteWrap($('edit-caption'), sideBySide ? 260 : 100, M.prompt);
+  const captionH = $('edit-caption').offsetHeight;
+  const tagH = 26, tagGap = 8, captionGap = 10;
+  // stacked layout metrics (used when the source is landscape)
+  const laneTop0 = 328 + captionH + captionGap + tagH + tagGap;
+  const laneH0 = 928 - laneTop0;
+
+  // Lane sizing (SPEC §3.5/§3.7, defects #2/#5): derive the box from the REAL measured
+  // portrait aspect of the source photo, never an independent landscape clamp — a
+  // (1.6,1.85) band forced on a ~0.66 portrait source cover-cropped away the jeans/
+  // hands/market-context that prove the before/after transformation happened. BEFORE
+  // (683x1024) and AFTER (672x1024) differ by <2% in aspect, so sizing off BEFORE and
+  // leaving object-fit:cover on both performs only the negligible common-crop §3.7 asks
+  // for to keep the wipe seam aligned — not a wholesale crop to a mismatched shape.
+  const rawAr = rawAr0;
+  let laneW, laneH, laneLeft, laneTop;
+  if (sideBySide) {
+    // portrait source: caption column left, wipe Lane claims the full Body Zone right
+    const zoneTop = 328 + tagH + tagGap, zoneH = 928 - zoneTop;
+    laneH = zoneH; laneW = laneH * rawAr;
+    const availW = 1344 - (96 + 520 + 48);
+    if (laneW > availW) { laneW = availW; laneH = laneW / rawAr; }
+    laneLeft = 1344 - laneW;
+    laneTop = zoneTop + (zoneH - laneH) / 2;
+  } else {
+    laneTop = laneTop0; laneH = laneH0;
+    laneW = Math.min(1248, laneH * rawAr);
+    laneLeft = 96 + (1248 - laneW) / 2;
+  }
+  Object.assign($('edit-lane').style, { left: laneLeft + 'px', top: laneTop + 'px', width: laneW + 'px', height: laneH + 'px' });
+  $('edit-before-img').src = M.before_image;
+  $('edit-after-img').src = M.after_image;
+  const tagTop = laneTop - tagH - tagGap;
+  Object.assign($('edit-tag-before').style, { left: laneLeft + 'px', top: tagTop + 'px' });
+  Object.assign($('edit-tag-after').style, { left: 'auto', right: (1440 - (laneLeft + laneW)) + 'px', top: tagTop + 'px' });
+
+  // identity-proof loupe stops (defects #2/#4/#5/#11): real facial landmarks — eyes,
+  // nose bridge, mouth — sampled directly off woman.jpg / woman_night_market_edited.webp
+  // as fractions of the FULL uncropped portrait (the Lane box now matches the source's
+  // native aspect almost exactly, so box-relative % ≈ source-relative %, no crop-remap
+  // needed). All three stops stay clustered on the face so the glide between them never
+  // drifts off it.
+  const stops = [
+    { x: 45, y: 40 }, // eyes
+    { x: 48, y: 43 }, // nose
+    { x: 47, y: 47 }, // mouth
+  ];
+  T = {
+    laneW, laneH, stops,
+    sweepOut: [0, 1.0], sweepBack: [1.0, 2.0], settleTo50: [2.0, 3.0],
+    loupe: [[3.1, 3.5], [4.3, 4.7], [5.5, 5.9]],
+    echoOut: [6.6, 7.1], echoBack: [7.1, 7.6],
+    end: 8.0,
+  };
+  return T.end;
+}
+// leadPct is the wipe boundary's x position (%); the AFTER layer is clipped visible
+// for x > leadPct (see setWipe below), so LOWER leadPct reveals MORE of AFTER and
+// HIGHER leadPct reveals more of BEFORE. Rest state (50/50, BEFORE-left/AFTER-right)
+// is leadPct=50, matching frame zero's fixed composition.
+function laneLeadX(t, T) {
+  const { sweepOut, sweepBack, settleTo50, echoOut, echoBack } = T;
+  if (t < sweepOut[1]) return lerp(50, -20, wipe(clamp(lin(t, sweepOut[0], sweepOut[1]), 0, 1))); // -> 100% AFTER
+  if (t < sweepBack[1]) return lerp(-20, 120, wipe(clamp(lin(t, sweepBack[0], sweepBack[1]), 0, 1))); // -> 100% BEFORE
+  if (t < settleTo50[1]) return lerp(120, 50, wipe(clamp(lin(t, settleTo50[0], settleTo50[1]), 0, 1))); // -> rest 50/50
+  if (t < echoOut[0]) return 50;
+  if (t < echoOut[1]) return lerp(50, 85, wipe(clamp(lin(t, echoOut[0], echoOut[1]), 0, 1))); // quick callback dip toward BEFORE
+  if (t < echoBack[1]) return lerp(85, 50, wipe(clamp(lin(t, echoBack[0], echoBack[1]), 0, 1)));
+  return 50;
+}
+function seekEdit(t) {
+  const leadPct = laneLeadX(t, T);
+  const slantPx = T.laneH * Math.tan(8.5 * Math.PI / 180);
+  const centerX = (leadPct / 100) * T.laneW;
+  const topPct = ((centerX - slantPx / 2) / T.laneW) * 100;
+  const botPct = ((centerX + slantPx / 2) / T.laneW) * 100;
+  $('edit-after-img').style.clipPath = `polygon(${topPct}% 0%, 130% 0%, 130% 130%, ${botPct}% 130%, ${topPct}% 0%)`;
+
+  const moving = t < T.settleTo50[1] || (t >= T.echoOut[0] && t < T.echoBack[1]);
+  const localP = t < T.sweepOut[1] ? lin(t, T.sweepOut[0], T.sweepOut[1])
+    : t < T.sweepBack[1] ? lin(t, T.sweepBack[0], T.sweepBack[1])
+    : t < T.settleTo50[1] ? lin(t, T.settleTo50[0], T.settleTo50[1])
+    : t < T.echoOut[1] ? lin(t, T.echoOut[0], T.echoOut[1])
+    : t < T.echoBack[1] ? lin(t, T.echoBack[0], T.echoBack[1]) : 0;
+  const bell = moving ? Math.sin(Math.PI * clamp(localP, 0, 1)) : 0;
+  $('edit-sweep').style.left = clamp(centerX, -20, T.laneW + 20) + 'px';
+  $('edit-sweep').style.opacity = bell * .8;
+  $('edit-sweep').style.transform = `rotate(8.5deg)`;
+
+  const punchWin = (t >= .45 && t < .65) ? clamp(lin(t, .45, .65), 0, 1) : null;
+  $('edit-lane').style.transform = punchWin !== null ? `scale(${1 + .012 * Math.sin(Math.PI * punchWin)})` : 'scale(1)';
+
+  // identity-proof loupe stops
+  let loupeOp = 0, lx = T.stops[0].x, ly = T.stops[0].y;
+  for (let i = 0; i < T.loupe.length; i++) {
+    const [a, b] = T.loupe[i];
+    const holdA = a, holdB = b, travelEnd = (T.loupe[i + 1] ? T.loupe[i + 1][0] : b + .3);
+    if (t >= a - .2 && t < b) { loupeOp = settle(clamp(lin(t, a - .2, a), 0, 1)); lx = T.stops[i].x; ly = T.stops[i].y; break; }
+    if (t >= b && t < travelEnd && T.stops[i + 1]) {
+      const p = settle(clamp(lin(t, b, travelEnd), 0, 1));
+      lx = lerp(T.stops[i].x, T.stops[i + 1].x, p); ly = lerp(T.stops[i].y, T.stops[i + 1].y, p);
+      loupeOp = 1; break;
+    }
+    if (t >= travelEnd) { loupeOp = 0; }
+  }
+  const bgW = T.laneW * 2.3, bgH = T.laneH * 2.3;
+  // fixed pixel separation (not a percentage of laneW) so the two circles stay tangent
+  // and both land on the same facial feature regardless of how wide the Lane renders —
+  // a percentage offset would blow the AFTER circle off the landmark once the Lane's
+  // aspect widened (defects #3/#9).
+  const offsetPct = (30 / T.laneW) * 100;
+  const setLoupe = (el, xPct, offsetPct) => {
+    const px = ((xPct + offsetPct) / 100) * T.laneW, py = (ly / 100) * T.laneH;
+    el.style.left = (px - 28) + 'px'; el.style.top = (py - 28) + 'px';
+    el.style.backgroundSize = bgW + 'px ' + bgH + 'px';
+    el.style.backgroundPosition = (-(px * (bgW / T.laneW) - 28)) + 'px ' + (-(py * (bgH / T.laneH) - 28)) + 'px';
+    el.style.opacity = loupeOp;
+  };
+  $('edit-loupe-before').style.backgroundImage = `url(${M.before_image})`;
+  $('edit-loupe-after').style.backgroundImage = `url(${M.after_image})`;
+  setLoupe($('edit-loupe-before'), lx, -offsetPct);
+  setLoupe($('edit-loupe-after'), lx, offsetPct);
+
+  const up = Math.sin(Math.PI * clamp(lin(t, T.echoBack[1], T.end), 0, 1));
+  $('footer-url').style.filter = `brightness(${1 + .1 * up})`;
+}
+
+// ==================== seek dispatcher ====================
+window.seek = async t => {
+  applyGrain(t);
+  applyEntrance(t);
+  if (MODE === 't2i') seekT2I(t);
+  else if (MODE === 'a2a') seekA2A(t);
+  else if (MODE === 'i2v') seekI2V(t);
+  else if (MODE === 'edit') seekEdit(t);
+};
+</script>
+</body>
+</html>
