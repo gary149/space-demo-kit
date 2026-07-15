@@ -10,6 +10,8 @@
   @font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-500.woff2') format('woff2'); font-weight: 500; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; transition: none !important; animation: none !important; }
+  /* fluid type scale: rem everywhere + clamped root (rem+vw mix keeps zoom working) */
+  html { font-size: clamp(12px, 4px + 0.84vw, 22px); }
   html, body { width: 1440px; height: 1080px; overflow: hidden; }
   body { font-family: 'Source Sans 3', sans-serif; background: #eceef2; position: relative; }
 
@@ -27,10 +29,10 @@
   /* ---- real hf.co Space header ---- */
   header { height: 86px; flex: none; display: flex; align-items: center; padding: 0 26px; border-bottom: 2px solid #f1f2f4; }
   #hf-logo { height: 44px; width: auto; flex: none; }
-  #spaces-word { font-size: 31px; font-weight: 700; color: #111827; margin-left: 12px; line-height: 1; }
+  #spaces-word { font-size: 2.05rem; font-weight: 700; color: #111827; margin-left: 12px; line-height: 1; }
   .crumb-sep { width: 2px; height: 40px; background: #e0e3e8; transform: rotate(14deg); margin: 0 20px; flex: none; }
   .crumb-emoji { width: 34px; height: 34px; flex: none; margin-right: 12px; }
-  .crumb-path { font-family: 'IBM Plex Mono', monospace; font-size: 29px; line-height: 1; position: relative; top: -2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crumb-path { font-family: 'IBM Plex Mono', monospace; font-size: 1.95rem; line-height: 1; position: relative; top: -2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #crumb-author { color: #98a1af; font-weight: 400; }
   .crumb-path .sl { color: #98a1af; }
   #crumb-name { color: #111827; font-weight: 600; }
@@ -38,12 +40,12 @@
   #header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; flex: none; }
   #like-pill { display: flex; align-items: center; border: 2px solid #e5e7eb; border-radius: 11px; overflow: hidden; }
   #like-pill svg { width: 22px; height: 22px; stroke: #6b7280; margin: 0 8px 0 14px; }
-  #like-pill .lk { font-size: 21px; color: #4b5563; padding-right: 12px; }
-  #like-count { font-size: 21px; font-weight: 600; color: #4b5563; border-left: 2px solid #e5e7eb; padding: 7px 14px; }
+  #like-pill .lk { font-size: 1.45rem; color: #4b5563; padding-right: 12px; }
+  #like-count { font-size: 1.45rem; font-weight: 600; color: #4b5563; border-left: 2px solid #e5e7eb; padding: 7px 14px; }
   #status-chip { display: flex; align-items: center; gap: 9px; background: #e8f8f0; border-radius: 11px; padding: 9px 16px; }
   #status-chip .dot { width: 11px; height: 11px; border-radius: 50%; background: #10b981; flex: none; }
-  #status-chip .ron { font-size: 20px; font-weight: 600; color: #047857; }
-  #hw-name { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; font-style: italic; color: #047857; letter-spacing: .5px; }
+  #status-chip .ron { font-size: 1.4rem; font-weight: 600; color: #047857; }
+  #hw-name { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; font-style: italic; color: #047857; letter-spacing: .5px; }
 
   main { flex: 1; display: flex; gap: 16px; padding: 16px; min-height: 0; }
   #col-inputs { width: 502px; flex: none; display: flex; flex-direction: column; gap: 14px; min-height: 0; }
@@ -56,30 +58,30 @@
   .backdrop { position: absolute; left: -4%; top: -4%; width: 108%; height: 108%; object-fit: cover; filter: blur(28px) saturate(.85) brightness(1.05); }
   .media-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
   .media-center img { max-width: 100%; max-height: 100%; }
-  .mlabel { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 9px 18px; font-size: 18px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #4b5563; box-shadow: 0 2px 10px rgba(0,0,0,.14); z-index: 5; }
+  .mlabel { position: absolute; top: 14px; left: 14px; display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 9px 18px; font-size: 1.3rem; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #4b5563; box-shadow: 0 2px 10px rgba(0,0,0,.14); z-index: 5; }
   .mlabel svg { width: 20px; height: 20px; stroke: #6b7280; flex: none; }
 
   #panel-input-image { flex: 1; min-height: 0; }
 
   /* video input thumbnail (vqa mode): poster frame + duration pill + play glyph */
-  .video-badge { display: none; position: absolute; bottom: 14px; right: 14px; align-items: center; gap: 7px; background: rgba(17,24,39,.78); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 500; border-radius: 999px; padding: 7px 15px; z-index: 5; }
+  .video-badge { display: none; position: absolute; bottom: 14px; right: 14px; align-items: center; gap: 7px; background: rgba(17,24,39,.78); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 1.2rem; font-weight: 500; border-radius: 999px; padding: 7px 15px; z-index: 5; }
   .video-badge svg { width: 15px; height: 15px; stroke: #fff; }
   #input-play { display: none; position: absolute; top: 50%; left: 50%; width: 74px; height: 74px; margin: -37px 0 0 -37px; border-radius: 50%; background: rgba(17,24,39,.5); align-items: center; justify-content: center; z-index: 5; }
   #input-play svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
 
   #panel-prompt { flex: none; }
-  .plabel { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #8b93a1; padding: 12px 16px 7px; flex: none; }
+  .plabel { display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #8b93a1; padding: 12px 16px 7px; flex: none; }
   .plabel svg { width: 20px; height: 20px; stroke: #a8aeba; flex: none; }
-  .plabel .pl-right { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 500; color: #8b93a1; text-transform: none; letter-spacing: 0; }
-  .prompt-body { padding: 2px 16px 14px; font-size: 24px; line-height: 1.38; color: #2f3541; }
-  #caret { display: inline-block; width: 3px; height: 28px; background: #ff7c00; vertical-align: text-bottom; margin-left: 2px; }
+  .plabel .pl-right { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 1.2rem; font-weight: 500; color: #8b93a1; text-transform: none; letter-spacing: 0; }
+  .prompt-body { padding: 2px 16px 14px; font-size: 1.8rem; line-height: 1.38; color: #2f3541; }
+  #caret { display: inline-block; width: 3px; height: 1.2em; background: #ff7c00; vertical-align: text-bottom; margin-left: 2px; }
 
   /* audio input panel */
   #panel-audio { flex: none; }
   #panel-audio .audio-body { position: relative; padding: 4px 16px 14px; }
   #wave-in { display: block; width: 100%; }
 
-  #generate { flex: none; height: 76px; border: none; border-radius: 14px; background: #ff7c00; color: #fff; font-family: inherit; font-size: 28px; font-weight: 700; letter-spacing: .4px; box-shadow: 0 3px 12px rgba(255,124,0,.3); }
+  #generate { flex: none; height: 76px; border: none; border-radius: 14px; background: #ff7c00; color: #fff; font-family: inherit; font-size: 2rem; font-weight: 700; letter-spacing: .4px; box-shadow: 0 3px 12px rgba(255,124,0,.3); }
 
   #panel-output { flex: 1; min-width: 0; }
 
@@ -101,7 +103,7 @@
   #slider-line { position: absolute; top: 0; bottom: 0; width: 5px; background: #fff; box-shadow: 0 0 14px rgba(0,0,0,.4); }
   #slider-grip { position: absolute; top: 50%; width: 68px; height: 68px; margin: -34px 0 0 -32px; border-radius: 50%; background: #fff; box-shadow: 0 3px 14px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
   #slider-grip svg { width: 34px; height: 34px; stroke: #5b6472; }
-  .slider-tag { position: absolute; bottom: 16px; font-size: 21px; font-weight: 700; letter-spacing: 1.4px; padding: 9px 20px; border-radius: 999px; background: rgba(17,24,39,.78); color: #fff; }
+  .slider-tag { position: absolute; bottom: 16px; font-size: 1.45rem; font-weight: 700; letter-spacing: 1.4px; padding: 9px 20px; border-radius: 999px; background: rgba(17,24,39,.78); color: #fff; }
   #tag-before { left: 16px; }
   #tag-after { right: 16px; }
 
@@ -109,25 +111,25 @@
   #wave-out-wrap { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 3; opacity: 0; background: #fff; }
   #wave-out { display: block; }
   #playhead { position: absolute; top: 12%; bottom: 12%; width: 4px; background: #111827; border-radius: 2px; opacity: 0; z-index: 4; }
-  #audio-time { position: absolute; bottom: 16px; right: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 21px; font-weight: 500; color: #6b7280; background: rgba(255,255,255,.94); border-radius: 999px; padding: 8px 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); z-index: 5; }
+  #audio-time { position: absolute; bottom: 16px; right: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 1.45rem; font-weight: 500; color: #6b7280; background: rgba(255,255,255,.94); border-radius: 999px; padding: 8px 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); z-index: 5; }
 
   /* gallery output (multi-image) */
   #grid-wrap { position: absolute; inset: 14px; display: none; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; z-index: 3; }
   .grid-cell { position: relative; border-radius: 12px; overflow: hidden; background: #f3f4f6; }
   .grid-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .grid-tag { position: absolute; bottom: 10px; left: 10px; font-size: 17px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; background: rgba(17,24,39,.78); color: #fff; }
+  .grid-tag { position: absolute; bottom: 10px; left: 10px; font-size: 1.25rem; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; background: rgba(17,24,39,.78); color: #fff; }
 
   /* streamed text answer (vqa mode) */
   #text-out-wrap { position: absolute; inset: 0; display: none; padding: 46px 50px; z-index: 3; opacity: 0; overflow: hidden; background: #fff; }
-  #text-out { font-size: 33px; line-height: 1.52; color: #1f2430; }
+  #text-out { font-size: 2.2rem; line-height: 1.5; color: #1f2430; }
   #text-caret { display: inline-block; width: 4px; height: 32px; background: #ff7c00; vertical-align: text-bottom; margin-left: 3px; }
-  #thinking-chip { position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 9px; background: rgba(255,124,0,.1); border-radius: 999px; padding: 9px 18px; font-size: 17px; font-weight: 700; letter-spacing: .5px; color: #d9660a; z-index: 6; opacity: 0; }
+  #thinking-chip { position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 9px; background: rgba(255,124,0,.1); border-radius: 999px; padding: 9px 18px; font-size: 1.2rem; font-weight: 700; letter-spacing: .5px; color: #d9660a; z-index: 6; opacity: 0; }
   #thinking-chip .tdot { width: 9px; height: 9px; border-radius: 50%; background: #ff7c00; }
 
   /* hero intro: the input opens near full-frame, then morphs into its panel slot */
   #hero { position: absolute; inset: 0; z-index: 50; display: none; }
   #hero-img { position: absolute; border-radius: 14px; box-shadow: 0 26px 70px rgba(15,20,40,.28); object-fit: contain; }
-  #hero-mlabel { position: absolute; display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 9px 18px; font-size: 18px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #4b5563; box-shadow: 0 2px 10px rgba(0,0,0,.14); }
+  #hero-mlabel { position: absolute; display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 9px 18px; font-size: 1.3rem; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #4b5563; box-shadow: 0 2px 10px rgba(0,0,0,.14); }
   #hero-mlabel svg { width: 20px; height: 20px; stroke: #6b7280; flex: none; }
   #hero-play { position: absolute; width: 92px; height: 92px; border-radius: 50%; background: rgba(17,24,39,.5); display: none; align-items: center; justify-content: center; }
   #hero-play svg { width: 36px; height: 36px; fill: #fff; margin-left: 5px; }
@@ -135,11 +137,11 @@
   #hero-caret { display: inline-block; width: 4px; background: #ff7c00; vertical-align: text-bottom; margin-left: 2px; }
 
   footer { height: 62px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 26px; border-top: 2px solid #f1f2f4; }
-  #slug { display: flex; align-items: center; gap: 11px; font-family: 'IBM Plex Mono', monospace; font-size: 24px; color: #5b6472; white-space: nowrap; }
+  #slug { display: flex; align-items: center; gap: 11px; font-family: 'IBM Plex Mono', monospace; font-size: 1.7rem; color: #5b6472; white-space: nowrap; }
   #slug img { width: 29px; height: 29px; }
   #meta { margin-left: auto; position: relative; height: 32px; min-width: 0; overflow: hidden; }
-  #meta-info { font-size: 18px; color: #9ca3af; line-height: 32px; white-space: nowrap; }
-  #meta-cta { position: absolute; right: 0; top: 0; font-size: 24px; font-weight: 700; color: #ff7c00; opacity: 0; white-space: nowrap; line-height: 32px; }
+  #meta-info { font-size: 1.25rem; color: #9ca3af; line-height: 32px; white-space: nowrap; }
+  #meta-cta { position: absolute; right: 0; top: 0; font-size: 1.6rem; font-weight: 700; color: #ff7c00; opacity: 0; white-space: nowrap; line-height: 32px; }
 </style>
 </head>
 <body>
@@ -330,13 +332,15 @@ window.setup = async manifest => {
   $('hf-emoji').src = M.hf_emoji_url;
   $('crumb-author').textContent = author;
   $('crumb-name').textContent = repo;
+  if (author.length + repo.length > 30) // long ids: shrink so the name never truncates
+    document.querySelector('.crumb-path').style.fontSize = '1.5rem';
   $('like-count').textContent = fmtLikes(M.space.likes || 0);
   $('hw-name').textContent = HW_NAMES[M.space.hardware] || (M.space.hardware || 'CPU').toUpperCase();
   $('slug-text').textContent = 'hf.co/spaces/' + M.space.id;
   $('meta-info').textContent = M.meta || '';
   if (M.space.id.length > 32) { // long ids: shrink footer type so nothing wraps or clips
-    $('slug').style.fontSize = '19px';
-    $('meta-info').style.fontSize = '15px';
+    $('slug').style.fontSize = '1.3rem';
+    $('meta-info').style.fontSize = '1.05rem';
   }
   $('input-label').textContent = M.input_label || 'input image';
   $('prompt-label').textContent = M.prompt_label || 'prompt';
@@ -353,7 +357,7 @@ window.setup = async manifest => {
   $('panel-audio').style.display = HAS.audio ? 'flex' : 'none';
   if (M.template === 't2v') { // prompt-only input: let it fill the column
     $('panel-prompt').style.flex = '1';
-    document.querySelector('.prompt-body').style.fontSize = '30px';
+    document.querySelector('.prompt-body').style.fontSize = '2.1rem';
     document.querySelector('.prompt-body').style.lineHeight = '1.45';
   }
   if (M.template === 'a2a') {
@@ -411,8 +415,8 @@ window.setup = async manifest => {
       const toFs = parseFloat(getComputedStyle(pb).fontSize);
       HERO.prTo = { left: pr.left + 16, top: pr.top + 2, width: pr.width - 32, fs: toFs };
       HERO.prFrom = HAS.image
-        ? { left: 220, top: HERO.imgFrom.top + HERO.imgFrom.height + 44, width: 1000, fs: 40 }
-        : { left: 190, top: 340, width: 1060, fs: 46 };
+        ? { left: 220, top: HERO.imgFrom.top + HERO.imgFrom.height + 44, width: 1000, fs: 46 }
+        : { left: 190, top: 340, width: 1060, fs: 54 };
     }
     const heroIn = [0, .35];
     const heroType = HAS.prompt ? .45 + Math.min(1.85, PROMPT_SHOWN.length / 75) : 1.05;
@@ -509,18 +513,19 @@ window.seek = async t => {
   if (T.hero) {
     const H = T.hero;
     const mp = easeIO(lin(t, H.morph[0], H.morph[1]));
-    $('window').style.opacity = mp;
+    $('window').style.opacity = Math.min(1, mp * 1.15);
     const done = t >= H.morph[1];
     $('hero').style.display = done ? 'none' : 'block';
     if (!done) {
       const ip = easeOut(lin(t, H.in[0], H.in[1]));
       const chipFade = ip * (1 - lin(t, H.morph[0], H.morph[0] + .3));
       if (HERO.imgFrom) {
+        $('input-img').style.opacity = lin(mp, .8, 1); // panel copy appears only as the hero fades into it
         const r = lerpRect(HERO.imgFrom, HERO.imgTo, mp);
         setRect($('hero-img'), r);
-        $('hero-img').style.opacity = ip;
-        $('hero-img').style.borderRadius = lerp(14, 4, mp) + 'px';
-        $('hero-img').style.boxShadow = `0 26px 70px rgba(15,20,40,${.28 * (1 - mp)})`;
+        $('hero-img').style.opacity = ip * (1 - lin(mp, .8, 1)); // crossfade into the panel's own image
+        $('hero-img').style.borderRadius = lerp(14, 0, mp) + 'px';
+        $('hero-img').style.boxShadow = `0 26px 70px rgba(15,20,40,${.28 * Math.max(0, 1 - mp * 1.6)})`;
         $('hero-img').style.transform = `translateY(${(1 - ip) * 18}px)`;
         const ml = $('hero-mlabel');
         ml.style.left = (r.left + 14) + 'px'; ml.style.top = (r.top + 14) + 'px';
@@ -542,7 +547,7 @@ window.seek = async t => {
         const el = $('hero-prompt');
         el.style.left = pr.left + 'px'; el.style.top = pr.top + 'px';
         el.style.width = pr.width + 'px'; el.style.fontSize = fs + 'px';
-        el.style.opacity = Math.min(1, ip) * (1 - lin(t, H.morph[0] + .3, H.morph[0] + .72));
+        el.style.opacity = Math.min(1, ip) * (1 - lin(mp, .25, .55));
         const typing = shown < PROMPT_SHOWN.length;
         $('hero-caret').style.height = (fs * 1.15) + 'px';
         $('hero-caret').style.opacity = typing && mp === 0 ? (((t * 2.5) % 1) < .55 ? 1 : 0) : 0;
@@ -551,7 +556,9 @@ window.seek = async t => {
     if (HAS.prompt) { // panel shows the final text; typing happened in the hero
       $('prompt-text').textContent = PROMPT_SHOWN;
       $('caret').style.opacity = 0;
+      $('prompt-text').parentElement.style.opacity = done ? 1 : lin(mp, .45, .8);
     }
+    if (HERO.imgFrom && done) $('input-img').style.opacity = 1;
   } else if (HAS.prompt) {
     const tp = lin(t, .25, T.press[0] - .2 + .001);
     const shown = Math.round(easeIO(tp) * PROMPT_SHOWN.length);
