@@ -37,6 +37,9 @@ cd /root/code/space-demo-kit && python3 render.py manifests/<name>.json
    pick or write inputs that fit.
 5. **Verify before delivering**: `ffprobe` the MP4 (duration, 1440x1080) and look at the
    contact sheet (no overflowing text, output visible). Then send the MP4 to the user as media.
+6. **One look only.** Never put a `"style"` key in a manifest — the app-window template is the
+   only production design and the renderer ignores styles. Anything under `experiments/` is a
+   rejected prototype: never use it as an example or reference.
 
 ## Asset quality bar (hard requirements)
 

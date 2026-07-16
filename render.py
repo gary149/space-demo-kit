@@ -217,9 +217,10 @@ def main() -> None:
     with sync_playwright() as pw:
         browser = pw.chromium.launch(args=["--force-color-profile=srgb"])
         page = browser.new_page(viewport={"width": WIDTH, "height": HEIGHT})
-        style_files = {"poster": "poster.html", "fullbleed": "fullbleed.html", "cards": "cards.html", "viral": "viral.html"}
-        tpl = style_files.get(m.get("style"), "app-window.html")
-        page.goto((KIT / "templates" / tpl).as_uri())
+        # app-window is the only production look; a manifest "style" key is ignored on purpose
+        if m.get("style"):
+            print(f"note: ignoring manifest style={m['style']!r}; app-window is the only supported template")
+        page.goto((KIT / "templates" / "app-window.html").as_uri())
         duration = page.evaluate("m => window.setup(m)", runtime)
         play_start = page.evaluate("() => window.__T.playStart ?? null")
         n = math.ceil(duration * FPS)
