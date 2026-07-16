@@ -186,8 +186,9 @@ def main() -> None:
         else:
             audio_play = Path(m["audio_out"])
     elif template == "t2i":
-        runtime["output_image"] = Path(m["output_image"]).resolve().as_uri()
-        runtime["output_aspect"] = image_aspect(Path(m["output_image"]))
+        # text-to-image demos use the t2v template with a static clip of the output image:
+        #   ffmpeg -loop 1 -i out.webp -t 6 -r 30 -pix_fmt yuv420p static.mp4
+        raise SystemExit('unknown template: t2i (use template "t2v" with a static video of the output image)')
     elif template == "gallery":
         runtime["outputs"] = [
             {"url": Path(o["path"]).resolve().as_uri(), "label": o["label"]}

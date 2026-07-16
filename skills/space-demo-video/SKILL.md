@@ -67,6 +67,10 @@ cd /root/code/space-demo-kit && python3 render.py manifests/<name>.json
 | `gallery` | one input → several images | `input_image`, `prompt`, `outputs` (list of `{path, label}`, 4 items) |
 | `vqa` | video/image + question → text | `video`, `prompt`, `answer` |
 
+Text-to-image Spaces use `t2v`: turn the generated image into a short static clip first
+(`ffmpeg -loop 1 -i out.webp -t 6 -r 30 -pix_fmt yuv420p static.mp4`) and pass it as `video`
+(see `manifests/z-image-turbo-demo.json`). There is no `t2i` template.
+
 ## Manifest schema
 
 Common fields (all templates):
